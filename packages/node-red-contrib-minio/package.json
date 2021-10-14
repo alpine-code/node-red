@@ -1,6 +1,6 @@
 {
     "name": "@alpine-code/node-red-contrib-minio",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "Minio for Node-RED ",
     "main": "index.js",
     "scripts": {

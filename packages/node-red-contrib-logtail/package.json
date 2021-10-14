@@ -1,6 +1,6 @@
 {
     "name": "@alpine-code/node-red-contrib-logtail",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Logtail for Node-RED ",
     "main": "index.js",
     "scripts": {
