@@ -1,0 +1,40 @@
+<script type="text/javascript">
+    RED.nodes.registerType('thelab-action', {
+      category: 'lab',
+      color: "#fff",
+      defaults: {
+        name: { value: '' },
+        action: { value: '' },
+        thelab: { type: 'thelab-config', required: true },
+      },
+      inputs: 1,
+      outputs: 1,
+      icon: 'thelab.png',
+      label: function () {
+        return this.name || 'TheLab Action';
+      },
+      labelStyle: function () {
+        return this.name ? 'node_label_italic' : '';
+      },
+      paletteLabel: 'action',
+    });
+  </script>
+
+  <script type="text/x-red" data-template-name="thelab-action">
+    <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+      <label for="node-input-action"><i class="icon-tag"></i> Action</label>
+      <input type="text" id="node-input-action" placeholder="Action">
+    </div>
+    <div class="form-row">
+        <label for="node-input-thelab"><i class="icon-tag"></i> TheLab Endpoint</label>
+        <input type="text" id="node-input-thelab" placeholder="Endpoint">
+    </div>
+  </script>
+  
+  <script type="text/x-red" data-help-name="thelab-action" data-lang="en-US">
+     
+  </script>

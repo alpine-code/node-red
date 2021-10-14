@@ -1,0 +1,74 @@
+{
+    "name": "@alpine-code/node-red-contrib-camunda",
+    "version": "2.2.1",
+    "description": "Camunda for Node-RED ",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest --testPathIgnorePatterns integration --forceExit --detectOpenHandles",
+        "test:integration": "jest --forceExit --detectOpenHandles"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/alpine-code/node-red-contrib-camunda.git"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "author": "ilzenzo",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/alpine-code/node-red-contrib-camunda/issues"
+    },
+    "homepage": "https://github.com/alpine-code/node-red-contrib-camunda#readme",
+    "keywords": [
+        "node-red",
+        "camunda",
+        "bpmn",
+        "workflow",
+        "microservice"
+    ],
+    "dependencies": {
+        "camunda-external-task-client-js": "^2.0.0",
+        "lodash": "^4.17.15",
+        "moment": "^2.29.1",
+        "uuid": "^3.3.2"
+    },
+    "devDependencies": {
+        "eslint": "^6.1.0",
+        "husky": "^4.0.10",
+        "jest": "^24.9.0",
+        "lint-staged": "^9.4.2",
+        "node-red": "^1.0.2",
+        "node-red-node-test-helper": "^0.2.3"
+    },
+    "node-red": {
+        "nodes": {
+            "camunda-config": "src/nodes/config.js",
+            "camunda-task-worker": "src/nodes/task-worker.js",
+            "camunda-complete-task": "src/nodes/complete-task.js",
+            "camunda-workflow-instance": "src/nodes/workflow-instance.js",
+            "camunda-publish-message": "src/nodes/publish-message.js",
+            "camunda-variables-helper": "src/nodes/variables-helper.js",
+            "camunda-deploy": "src/nodes/deploy.js"
+        }
+    },
+    "jest": {
+        "testEnvironment": "node"
+    },
+    "prettier": {
+        "trailingComma": "es5",
+        "tabWidth": 4,
+        "semi": true,
+        "singleQuote": true
+    },
+    "husky": {
+        "hooks": {
+        }
+    },
+    "lint-staged": {
+        "src/**/*.js": [
+            "prettier --write",
+            "git add"
+        ]
+    }
+}

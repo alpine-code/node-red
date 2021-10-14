@@ -1,0 +1,72 @@
+<script type="text/javascript">
+    function validate(value) {
+        return value === '' || RED.validators.number()(value);
+    }
+    RED.nodes.registerType('task-worker', {
+        category: 'zeebe',
+        color: '#C0DEED',
+        defaults: {
+            name: { value: '' },
+            zeebe: { required: true, type: 'zeebe' },
+            taskType: { required: true },
+            maxActiveJobs: { value: 32, validate },
+            timeout: { value: 1000, validate },
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: 'zeebe.png',
+        label: function () {
+            return this.name || 'task worker';
+        },
+        paletteLabel: 'task worker',
+    });
+</script>
+
+<script type="text/x-red" data-template-name="task-worker">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-zeebe"><i class="fa fa-server"></i> Zeebe Broker</label>
+        <input type="text" id="node-input-zeebe" placeholder="Zeebe Broker" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-taskType"><i class="fa fa-envelope"></i> Task Type</label>
+        <input type="text" id="node-input-taskType" placeholder="Task Type">
+    </div>
+    <div class="form-row">
+        <label for="node-input-maxActiveJobs"><i class="fa fa-arrows-v"></i> Max Active Jobs</label>
+        <input type="text" id="node-input-maxActiveJobs" placeholder="Max Active Jobs">
+    </div>
+    <div class="form-row">
+        <label for="node-input-timeout"><i class="fa fa-clock-o"></i> Timeout</label>
+        <input type="text" id="node-input-timeout" placeholder="Timeout (ms)">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="task-worker">
+    <p>Creates a task worker and subscribes to specific task type. This node outputs a Node-RED message for each newly received job.</p>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">object</span></dt>
+                <dd>the standard output of the command.</dd>
+
+                <dt>payload.job <span class="property-type">object</span></dt>
+                <dd>Information about the job.</dd>
+
+                <dt>payload.complete <span class="property-type">function</span></dt>
+                <dd>A function which completes the corresponding job, when called. Should be used to to trigger a <code>complete-task</code> node.</dd>
+            </dl>
+        </li>
+    </ol>
+
+    <h3>References</h3>
+    <ul>
+        <li>Camunda Cloud Docs: <a href="https://docs.camunda.io/docs/product-manuals/concepts/job-workers/">Job Workers</a></li>
+        <li>zeebe-node docs: <a href="https://www.npmjs.com/package/zeebe-node#job-workers">createWorker</a></li>
+    </ul>
+</script>

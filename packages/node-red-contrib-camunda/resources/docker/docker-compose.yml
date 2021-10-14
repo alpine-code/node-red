@@ -1,0 +1,19 @@
+version: '2'
+
+networks:
+    camunda_network:
+
+volumes:
+    camunda_data:
+
+services:
+        build: ./node-red
+        environment:
+            - TZ=Europe/Zurich
+        ports:
+            - '1880:1880'
+        volumes:
+            - ./node-red/data:/data
+        depends_on:
+        networks:
+            - camunda_network

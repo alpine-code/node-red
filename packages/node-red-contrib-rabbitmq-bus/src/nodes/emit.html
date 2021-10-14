@@ -1,0 +1,41 @@
+<script type="text/javascript">
+
+    RED.nodes.registerType('rabbitmq-bus-emit', {
+        category: 'rabbitmq',
+        color: '#fff',
+        defaults: {
+            host: { value: "", type: "rabbitmq-bus-config", required: true },
+            exchangeName: { value: "" }
+        },
+        inputs: 1,
+        outputs: 0,
+        icon: "rabbitmq.png",
+        label: function () {
+            return this.emitName || "Emit";
+        },
+        paletteLabel: 'emit'
+    });
+
+</script>
+
+
+
+<!-- ====  NODE EDIT FORM  ==================================================================================== -->
+
+<script type="text/html" data-template-name="rabbitmq-bus-emit">
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-server"></i> RabbitMQ Host</label>
+        <input type="text" id="node-input-host" />
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-exchangeName"><i class="fa fa-server"></i> Exchange</label>
+        <input type="text" id="node-input-exchangeName" />
+    </div>
+</script>
+
+
+<!-- ====  NODE HELP INFORMATION  ==================================================================================== -->
+
+<script type="text/html" data-help-name="rabbitmq-bus-emit">
+
+</script>

@@ -1,0 +1,61 @@
+<script type="text/javascript">
+    RED.nodes.registerType('aws-ses-send', {
+      category: 'aws-ses',
+      color: "#fff",
+      defaults: {
+        name: { value: '' },
+        awsSes: { type: 'aws-ses-config', required: true },
+        from: { value: '"Lorenzo Casari 👻" <casari.lorenzo@gmail.com>', required: true },
+        to: { value: 'hello@alpine-code.com', required: true },
+        subject: { value: 'Hello ✔', required: true },
+        text: { value: 'Hello world?', required: true },
+        html: { value: '<b>Hello world?</b>', required: true },
+      },
+      inputs: 1,
+      outputs: 1,
+      icon: 'aws-ses.png',
+      label: function () {
+        var forceNode = RED.nodes.node(this.force);
+        return this.name || 'AWS SES Send';
+      },
+      labelStyle: function () {
+        return this.name ? 'node_label_italic' : '';
+      },
+      paletteLabel: 'send',
+    });
+  </script>
+
+  <script type="text/x-red" data-template-name="aws-ses-send">
+    <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-awsSes"><i class="icon-tag"></i> AWS SES Account</label>
+        <input type="text" id="node-input-awsSes" placeholder="Account">
+    </div>
+    <div class="form-row">
+      <label for="node-input-from"><i class="icon-tag"></i> From</label>
+      <input type="text" id="node-input-from" placeholder="Name">
+    </div>
+    <div class="form-row">
+      <label for="node-input-to"><i class="icon-tag"></i> To</label>
+      <input type="text" id="node-input-to" placeholder="To">
+    </div>
+    <div class="form-row">
+      <label for="node-input-subject"><i class="icon-tag"></i> Subject</label>
+      <input type="text" id="node-input-subject" placeholder="Subject">
+    </div>
+    <div class="form-row">
+      <label for="node-input-text"><i class="icon-tag"></i> Text</label>
+      <input type="text" id="node-input-text" placeholder="Text">
+    </div>
+    <div class="form-row">
+      <label for="node-input-html"><i class="icon-tag"></i> HTML</label>
+      <input type="text" id="node-input-html" placeholder="HTML">
+    </div>
+  </script>
+  
+  <script type="text/x-red" data-help-name="aws-ses-send" data-lang="en-US">
+     
+  </script>

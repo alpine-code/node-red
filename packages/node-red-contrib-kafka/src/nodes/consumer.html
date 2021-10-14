@@ -1,0 +1,134 @@
+<script type="text/javascript">
+  RED.nodes.registerType('kafka-consumer', {
+    category: 'kafka',
+    color: "#fff",
+    defaults: {
+      name: { value: '' },
+      kafka: { type: 'kafka-config', required: true },
+
+      groupId: { value: "", require: false },
+      topic: { value: "", required: true },
+
+      advancedOptions: { value: false, require: true },
+      autoCommitInterval: { value: 5000, required: true },
+      autoCommitThreshold: { value: 100, required: true },
+      sessionTimeout: { value: 30000, required: true },
+      rebalanceTimeout: { value: 60000, required: true },
+      heartbeatInterval: { value: 3000, required: true },
+      metadataMaxAge: { value: 300000, required: true },
+      maxBytesPerPartition: { value: 1048576, required: true },
+      minBytes: { value: 1, required: true },
+      maxBytes: { value: 10485760, required: true },
+      maxWaitTimeInMs: { value: 5000, required: true },
+      fromBeginning: { value: false, required: true },
+      clearOffsets: { value: false, required: true },
+      allowAutoTopicCreation: { value: false, required: true }
+    },
+    inputs: 0,
+    outputs: 1,
+    icon: 'kafka.png',
+    label: function () {
+      return this.name || 'Kafka Consumer';
+    },
+    labelStyle: function () {
+      return this.name ? 'node_label_italic' : '';
+    },
+    paletteLabel: 'consumer',
+    oneditprepare: function () {
+      function checkAdvancedOptions(checked) {
+        if (checked) {
+          $("#node-advancedOptions").show();
+        }
+        else {
+          $("#node-advancedOptions").hide();
+        }
+      }
+      checkAdvancedOptions($("#node-input-advancedOptions").val());
+      $('#node-input-advancedOptions').change(function () {
+        checkAdvancedOptions($(this).is(':checked'));
+      })
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="kafka-consumer">
+    <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-kafka"><i class="icon-tag"></i> Kafka</label>
+        <input type="text" id="node-input-kafka" placeholder="Kafka">
+    </div>
+
+    <div class="form-row">
+      <label for="node-input-groupId"><i class="fa fa-tag"></i> Group ID</label>
+      <input type="text" id="node-input-groupId" placeholder="Group ID">
+    </div>
+    <div class="form-row">
+        <label for="node-input-topic"><i class="fa fa-link"></i> Topic</label>
+        <input type="text" id="node-input-topic" placeholder="Topic">
+    </div>
+
+    <div class="form-row">
+      <label for="node-input-advancedOptions" style="display: inline-block; width: auto; vertical-align: top;"><i class="fa  fa-cogs"></i> Advanced Options</label>
+      <input id="node-input-advancedOptions" type="checkbox" style="width:30%">
+    </div>
+    <div id="node-advancedOptions" class="form-row" style="margin-left:30px">
+      <div class="form-row">
+          <label for="node-input-autoCommitInterval"><i class="fa fa-clock-o"></i> Autocommit Interval</label>
+          <input id="node-input-autoCommitInterval" type="number">
+      </div>
+      <div class="form-row">
+          <label for="node-input-autoCommitThreshold"><i class="fa fa-tag"></i> Autocommit Threshold</label>
+          <input id="node-input-autoCommitThreshold" type="number">
+      </div>
+      <div class="form-row">
+          <label for="node-input-sessionTimeout"><i class="fa fa-clock-o"></i> Session Timout</label>
+          <input id="node-input-sessionTimeout" type="number">
+      </div>
+      <div class="form-row">
+          <label for="node-input-rebalanceTimeout"><i class="fa fa-clock-o"></i> Rebalance Timeout</label>
+          <input id="node-input-rebalanceTimeout" type="number">
+      </div>
+      <div class="form-row">
+          <label for="node-input-heartbeatInterval"><i class="fa fa-clock-o"></i> Heartbeat Interval</label>
+          <input id="node-input-heartbeatInterval" type="number">
+      </div>
+      <div class="form-row">
+          <label for="node-input-metadataMaxAge"><i class="fa fa-clock-o"></i> Metadata Max Age</label>
+          <input id="node-input-metadataMaxAge" type="number">
+      </div>
+      <div class="form-row">
+          <label for="node-input-maxBytesPerPartition"><i class="fa fa-tag"></i> Max Bytes Per Partition</label>
+          <input id="node-input-maxBytesPerPartition" type="number">
+      </div>
+      <div class="form-row">
+          <label for="node-input-minBytes"><i class="fa fa-tag"></i> Min Bytes</label>
+          <input id="node-input-minBytes" type="number">
+      </div>
+      <div class="form-row">
+          <label for="node-input-maxBytes"><i class="fa fa-tag"></i> Max Bytes</label>
+          <input id="node-input-maxBytes" type="number">
+      </div>
+      <div class="form-row">
+          <label for="node-input-maxWaitTimeInMs"><i class="fa fa-tag"></i> Max Wait Time(ms)</label>
+          <input id="node-input-maxWaitTimeInMs" type="number">
+      </div>
+      <div class="form-row">
+          <label for="node-input-allowAutoTopicCreation"><i class="fa fa-tag"></i> Allow Auto Topic Creation</label>
+          <input type="checkbox" id="node-input-allowAutoTopicCreation">
+      </div>
+      <div class="form-row">
+        <label for="node-input-clearOffsets"><i class="fa fa-eraser"></i> Clear Offsets</label>
+        <input type="checkbox" id="node-input-clearOffsets">
+      </div>
+      <div class="form-row">
+          <label for="node-input-fromBeginning"><i class="fa fa-step-backward"></i> From Beginning</label>
+          <input type="checkbox" id="node-input-fromBeginning">
+      </div>
+  </script>
+
+<script type="text/x-red" data-help-name="kafka-consumer" data-lang="en-US">
+
+  </script>

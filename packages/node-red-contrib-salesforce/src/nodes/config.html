@@ -1,0 +1,192 @@
+<script type="text/javascript">
+  RED.nodes.registerType('salesforce-config', {
+    category: 'config',
+    defaults: {
+      loginUrl: { value: "https://login.salesforce.com", required: true },
+      loginType: { value: "Username-Password", required: true  },
+      username: { value: '', required: true }
+    },
+    credentials: {
+      password: { type: 'password' },
+      clientId: { type: 'password' },
+      clientSecret: { type: 'password' },
+      userId: { type: 'text' }
+    },
+    label: function () {
+      return this.username
+    },
+    oneditprepare: function () {
+      var configNode = this;
+      var id = this.id;
+      var pathname = document.location.pathname;
+      if (pathname.slice(-1) != "/") {
+        pathname += "/";
+      }
+      var callback = location.protocol + "//";
+      callback += (location.port == "") ? location.hostname : location.hostname + ":" + location.port;
+      callback += pathname + "force/credentials/" + id + "/auth/callback";
+      $("#node-config-force-tooltip").html("<p>Please configure the authorized <b>Redirect URIs</b> of your app to include the following url:</p>\n<code>" + callback + "</code>");
+
+      function updateForceAuthButton() {
+        var v1 = $("#node-config-input-clientId").val();
+        var v2 = $("#node-config-input-clientSecret").val();
+        var v3 = $("#node-config-input-username").val();
+        $("#node-config-start-auth").toggleClass("disabled", (v1.length === 0 || v2.length === 0 || v3.length === 0));
+      }
+      $("#node-config-input-username").on('change keydown paste input', updateForceAuthButton);
+      $("#node-config-input-clientId").on('change keydown paste input', updateForceAuthButton);
+      $("#node-config-input-clientSecret").on('change keydown paste input', updateForceAuthButton);
+
+      updateForceAuthButton();
+
+      function pollForceCredentialsUrl() {
+        $.getJSON(pathname + 'force/credentials/' + id, function (data) {
+          if (data.userId) {
+            updateForceUserId(data.userId);
+            delete window.forceConfigNodeIntervalId;
+          } else {
+            window.forceConfigNodeIntervalId = window.setTimeout(pollForceCredentialsUrl, 2000);
+          }
+        });
+      }
+
+      function updateForceUserId(dn) {
+        $("#node-config-force-client-keys").hide();
+        $("#node-config-force").show();
+        $("#node-config-input-userId").val(dn);
+        var username = $("#node-config-input-username").val();
+        $("#node-config-force-username").html(username);
+      }
+
+      if (this.credentials.userId) {
+        updateForceUserId(this.userId);
+      } else {
+        $("#node-config-force-client-keys").show();
+        $("#node-config-force").hide();
+      }
+
+      $("#node-config-start-auth").mousedown(function () {
+        var clientId = $("#node-config-input-clientId").val();
+        var clientSecret = $("#node-config-input-clientSecret").val();
+        var username = $("#node-config-input-username").val();
+        var loginUrl = $("#node-config-input-loginUrl option:selected").val();
+        var url = 'force/credentials/' + id + '/auth?id=' + id
+          + '&clientId=' + clientId
+          + '&clientSecret=' + clientSecret
+          + '&callback=' + encodeURIComponent(callback)
+          + '&username=' + username
+          + '&loginUrl=' + encodeURIComponent(loginUrl);
+        $(this).attr("href", url);
+        window.forceConfigNodeIntervalId = window.setTimeout(pollForceCredentialsUrl, 2000);
+      });
+
+      $("#node-config-start-auth").click(function (e) {
+        var clientId = $("#node-config-input-clientId").val();
+        var clientSecret = $("#node-config-input-clientSecret").val();
+        var username = $("#node-config-input-username").val();
+        if (clientId === "" || clientSecret === "" || username === "") {
+          e.preventDefault();
+        }
+      });
+
+      $("#node-config-input-loginType").change(function () {
+        var passwordel = $(".input-password-row");
+        var clientIdel = $(".input-clientId-row");
+        var secretel = $(".input-clientSecret-row");
+        var buttonel = $(".input-startauth-row");
+        var loginUrlel = $(".input-loginUrl-row");
+        var tooltipel = $("#node-config-force-tooltip");
+
+        var id = $("#node-config-input-loginType option:selected").val();
+        if (id == 'oauth') {
+          passwordel.hide();
+          clientIdel.show();
+          secretel.show();
+          buttonel.show();
+          tooltipel.show();
+          loginUrlel.show();
+        } else if (id == 'Username-Password') {
+          passwordel.show();
+          clientIdel.hide();
+          secretel.hide();
+          buttonel.hide();
+          tooltipel.hide();
+          loginUrlel.show();
+        } else {
+          passwordel.hide();
+          clientIdel.hide();
+          secretel.hide();
+          buttonel.hide();
+          tooltipel.hide();
+          loginUrlel.hide();
+        }
+      });
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="salesforce-config">
+  <div id="node-config-force-client-keys">
+      <div class="form-row">
+        <label for="node-config-input-loginType"><i class="fa fa-plug"></i> Login Type</label>
+        <select type="text" id="node-config-input-loginType" style="width:70%">
+          <option value="Username-Password">Username Password</option>
+          <option value="oauth">OAuth2</option>
+          <option value="Signed-Request">Signed Request</option>
+        </select>
+      </div>
+      <div class="form-tips" id="node-config-force-tooltip">
+      </div>
+      <div class="form-row input-loginUrl-row">
+        <label for="node-config-input-loginUrl"><i class="fa fa-plug"></i> Login URL</label>
+        <select type="text" id="node-config-input-loginUrl" style="width:70%">
+          <option value="https://login.salesforce.com">Production(login.salesforce.com)</option>
+          <option value="https://test.salesforce.com">Sandbox(test.salesforce.com)</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="node-config-input-username"><i class="fa fa-bookmark"></i> User Name</label>
+        <input type="text" id="node-config-input-username" placeholder="example@example.com" />
+      </div>
+      <div class="form-row input-password-row">
+        <label for="node-config-input-password"><i class="fa fa-lock"></i> Password</label>
+        <input type="password" id="node-config-input-password">
+      </div>
+      <div class="form-row input-clientId-row">
+        <label for="node-config-input-clientId"><i class="fa fa-bookmark"></i> Client Id</label>
+        <input type="password" id="node-config-input-clientId" />
+      </div>
+      <div class="form-row input-clientSecret-row">
+        <label for="node-config-input-clientSecret"><i class="fa fa-lock"></i> Client Secret</label>
+        <input type="password" id="node-config-input-clientSecret" />
+      </div>
+      <div class="form-row input-startauth-row">
+        <label>&nbsp;</label>
+        <a class="btn" id="node-config-start-auth" href="#" target="_blank">Authenticate with Salesforce</a>
+      </div>
+  </div>
+  <div id="node-config-force">
+    <div class="form-row">
+        <label><i class="fa fa-user"></i> User</label>
+        <span id="node-config-force-username" class="input-xlarge uneditable-input"></span>
+    </div>
+    <input type="hidden" id="node-config-input-userId">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="salesforce-config" data-lang="en-US">
+    <p>Set login information for force.com. This node uses the following three login methods.</p>
+    <ul>
+      <li>Login with <strong>Username Password</strong>
+        <p>Set Username (<code>User Name</code>) and Password (<code>Password</code>, with Security Token).</p>
+      </li>
+      <li>Login with <strong>OAuth2</strong>
+        <p>When logging in with OAuth2, Create a Connected App with salesforce Setup -> Create -> Apps</p>
+        <p>At this time, specify the Redirect URL displayed on the node setting screen as the Callback URL of the Connected App.</p>
+        <p>Set the Username (<code>User Name</code>), Consumer Key (<code>Client Id</code>) and Consumer Secret (<code>Client Secret</code>). Click then <code>Authenticate with Salesforce</code> button to fetch the Access Token and Refresh Token.</p>
+      </li>
+      <li>Login with <strong>Signed Request</strong>
+        <p>When logging in with a Signed Request, provide <code>msg.accessToken</code> and <code>msg.instanceUrl</code>.</p>
+      </li>
+    </ul>
+</script>

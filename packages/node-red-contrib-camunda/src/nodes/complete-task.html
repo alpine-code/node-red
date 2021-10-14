@@ -1,0 +1,27 @@
+<script type="text/javascript">
+    RED.nodes.registerType('camunda-complete-task', {
+        category: 'camunda',
+        color: '#FFF',
+        defaults: {
+            name: { value: '' },
+        },
+        inputs: 1,
+        outputs: 0,
+        icon: 'camunda.png',
+        label: function() {
+            return this.name || 'complete';
+        },
+        paletteLabel: 'complete',
+    });
+</script>
+
+<script type="text/x-red" data-template-name="camunda-complete-task">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="camunda-complete-task">
+    <p>When a Node-RED message is received at the input, this node completes a specific Camunda external task.</p>
+</script>

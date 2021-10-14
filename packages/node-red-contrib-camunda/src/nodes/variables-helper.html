@@ -1,0 +1,53 @@
+<script type="text/javascript">
+    RED.nodes.registerType('camunda-variables-helper', {
+        category: 'camunda',
+        color: '#FFF',
+        defaults: {
+            name: { value: "" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "camunda.png",
+        label: function () {
+            return this.name || "variables helper";
+        },
+        paletteLabel: 'variables helper'
+    });
+</script>
+
+<script type="text/x-red" data-template-name="camunda-variables-helper">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="camunda-variables-helper">
+    <p>When a Node-RED message is received at the input, a variable helper is added to the message.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Payload object containing properties for starting a process or sending a message to Camunda.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>variables <span class="property-type">function</span></dt>
+        <dd>
+            <span>The variables helper constructor.</span>
+            <br />
+            <span>Here are some usage examples to use in a function node:</span>
+            <br />
+<pre>
+msg.payload.processVariables = new msg.variables();
+msg.payload.processVariables.set("string", "string");
+msg.payload.processVariables.set("integer", 10);
+msg.payload.processVariables.set("double", 1.1);
+msg.payload.processVariables.set("boolean", true);
+msg.payload.processVariables.set("json", {});
+msg.payload.processVariables.set("date", new Date());
+</pre>
+        </dd>
+    </dl>
+</script>

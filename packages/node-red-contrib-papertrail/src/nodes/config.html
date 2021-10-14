@@ -1,0 +1,32 @@
+<script type="text/javascript">
+  RED.nodes.registerType('papertrail-config', {
+    category: 'config',
+    defaults: {
+      host: { value: '', required: true },
+      port: { value: 0, required: true, validate: RED.validators.number() },
+      appName: { value: '', required: true },
+    },
+    label: function () {
+      return this.host + ':' + this.port;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="papertrail-config">
+  <div class="form-row">
+    <label for="node-config-input-host"><i class="icon-bookmark"></i> Host</label>
+    <input type="text" id="node-config-input-host">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-port"><i class="icon-bookmark"></i> Port</label>
+    <input type="text" id="node-config-input-port">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-appName"><i class="icon-bookmark"></i> App</label>
+    <input type="text" id="node-config-input-appName">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="papertrail-config" data-lang="en-US">
+
+</script>

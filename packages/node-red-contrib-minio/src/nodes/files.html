@@ -1,0 +1,203 @@
+<script type="text/javascript">
+
+    RED.nodes.registerType('minio-files', {
+        category: 'minio',
+        color: '#fff',
+        defaults: {
+            files_name: { value: "" },
+            host: { value: "", type: "minio-config", required: true },
+            files_operation: { value: "" },
+            files_bucket: { value: "" },
+            files_object: { value: "" },
+            files_filepath: { value: "" },
+            files_metadata: { value: "" }
+        },
+        inputs: 1,
+        outputs: 2,
+        outputLabels: ["Output", "Error"],
+        icon: "minio.png",
+        label: function () {
+            return this.files_name || "File Object Operations";
+        },
+        paletteLabel: 'files'
+    });
+
+    // ====  FUNCTION TO TOGGLE FORM ELEMENT DISPLAY  ===============================================
+    function toggleVisibilityFiles(elementArray) {
+        let element;
+        for (element of elementArray) {
+            let x = document.getElementById(element[0]);
+            if (element[1]) {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    }
+
+    // ====  FUNCTION TO DECIDE WHICH FORM ELEMENTS TO DISPLAY  =====================================
+    function inputVisibilityFiles(elementId) {
+        let selection = document.getElementById(elementId).value;
+        let bitwise = 0;
+
+        switch (selection) {
+            case "fGetObject":
+                bitwise = 7;
+                break;
+            case "fPutObject":
+                bitwise = 15;
+                break;
+            case "default":
+                bitwise = 0;
+        }
+
+        let elementArray = [];
+
+        let elementIds = [
+            [1, "files_bucketName"],
+            [2, "files_objectName"],
+            [4, "files_filePath"],
+            [8, "files_metaData"]
+        ]
+
+        for (elementId of elementIds) {
+            let isVisible = false;
+
+            if (bitwise & elementId[0]) {
+                isVisible = true;
+            }
+            elementArray.push([elementId[1], isVisible])
+        }
+        toggleVisibilityFiles(elementArray)
+    }
+
+</script>
+
+
+
+<!-- ====  NODE EDIT FORM  ==================================================================================== -->
+
+<script type="text/html" data-template-name="minio-files">
+    <div class="form-row">
+        <label for="node-input-files_name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-files_name" placeholder="MinIO File Operations">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-server"></i> MinIO Host</label>
+        <input type="text" id="node-input-host" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-files_operation"><i class="fa fa-wrench"></i> Operation</label>
+        <select type="text" id="node-input-files_operation" onchange="inputVisibilityFiles(id)">
+            <option value="default">--Select File Object Operation--</option>
+            <option value="fGetObject">fGetObject</option>
+            <option value="fPutObject">fPutObject</option>
+        ;
+        </select>        
+    </div>
+    <div class="form-row" id="files_bucketName" style="display: none">
+        <label for="node-input-files_bucket"><i class="fa fa-database"></i> Bucket</label>
+        <input type="text" id="node-input-files_bucket" placeholder="Bucket Name">
+    </div>
+    <div class="form-row" id="files_objectName" style="display: none">
+        <label for="node-input-files_object"><i class="fa fa-file"></i> File</label>
+        <input type="text" id="node-input-files_object" placeholder="File Name">
+    </div>
+    <div class="form-row" id="files_filePath" style="display: none">
+        <label for="node-input-files_filepath"><i class="fa fa-folder-open"></i> Path</label>
+        <input type="text" id="node-input-files_filepath" placeholder="File Path, eg /my-file.txt">
+    </div>
+    <div class="form-row" id="files_metaData" style="display: none">
+        <label for="node-input-files_metadata"><i class="fa fa-info"></i> MetaData</label>
+        <input type="text" id="node-input-files_metadata" placeholder="Meta Data (optional)">
+    </div>
+</script>
+
+
+
+<!-- ====  NODE HELP INFORMATION  ==================================================================================== -->
+
+<script type="text/html" data-help-name="minio-files">
+
+    <h1>MinIO File Object Operations</h1>
+    <p>For each operation, paramenters can either be set in the Edit Node dialogue, 
+    or passed in to the node via the node input. Parameters passed in will override any parameters 
+    set in the Edit Node dialogue.</p>
+    <p>The bucket <b><i>Operation</i></b> can be passed in to the node by setting the appropriate incoming value of <code>msg.operation</code></p>
+    
+    <hr>
+
+    <h2>1. <i>fGetObject</i></h2>
+    
+    <h3>Description</h3>
+    <p>Downloads and saves the object as a file in the local filesystem.</p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-file">&#x202F;</i></td><td valign="top"><b>File</b></td><td><b><code>objectName</code></b> ( <code>msg.objectName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the object.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-folder-open">&#x202F;</i></td><td valign="top"><b>Path</b></td><td><b><code>filePath</code></b> ( <code>msg.filePath</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Path on the local filesystem to which the object data will be written.</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">The node will output confirmation, in the form of a JS object, as to whether or not the object could be downloaded as a file, e.g. <code>{"fGetObject":true}</code></td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+    
+    <hr>
+
+
+    <h2>2. <i>fPutObject</i></h2>
+    
+    <h3>Description</h3>
+    <p>Uploads contents from a file to objectName.</p>
+    <p>The maximum size of a single object is limited to 5TB. fPutObject transparently uploads objects larger than 64MiB in multiple parts. Uploaded data is carefully verified using MD5SUM signatures.</p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-file">&#x202F;</i></td><td valign="top"><b>File</b></td><td><b><code>objectName</code></b> ( <code>msg.objectName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the object.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-folder-open">&#x202F;</i></td><td valign="top"><b>Path</b></td><td><b><code>filePath</code></b> ( <code>msg.filePath</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Path of the file to be uploaded.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-info">&#x202F;</i></td><td valign="top"><b>MetaData</b></td><td><b><code>metaData</code></b> ( <code>msg.metaData</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Metadata of the object (optional).</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">The node will output a JS object, containing confirmation as to whether or not the file object was successfully uploaded, and, if successful, an etag value for the uploaded file object, e.g. <code>{"fPutObject":true,"etag":"etagvaluestring"}</code></td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+
+    <hr>
+    
+    
+
+</script>

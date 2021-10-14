@@ -1,0 +1,39 @@
+<script type="text/javascript">
+    RED.nodes.registerType('camunda-config', {
+        category: 'config',
+        defaults: {
+            name: { value: '' },
+            baseUrl: { value: "http://localhost:8080/engine-rest", required: true },
+            basicAuth: { value: false },
+            username: { value: "" },
+            password: { value: ""  }
+        },
+        label: function () {
+            return this.name || this.baseUrl || "camunda"
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="camunda-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+
+    <div class="form-row">
+        <label for="node-config-input-baseUrl"><i class="fa fa-server"></i> Base Url</label>
+        <input type="text" id="node-config-input-baseUrl">
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-config-input-basicAuth" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-config-input-basicAuth" style="width: auto; white-space:nowrap;">Use Basic Auth</label>
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-username"><i class="fa fa-user"></i> Username</label>
+        <input type="text" id="node-config-input-username">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-password"><i class="fa fa-user"></i> Password</label>
+        <input type="text" id="node-config-input-password">
+    </div>
+</script>

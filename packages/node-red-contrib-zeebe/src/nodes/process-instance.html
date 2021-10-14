@@ -1,0 +1,57 @@
+<script type="text/javascript">
+    RED.nodes.registerType('process-instance', {
+        category: 'zeebe',
+        color: '#C0DEED',
+        defaults: {
+            name: { value: '' },
+            zeebe: { required: true, type: 'zeebe' },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'zeebe.png',
+        label: function () {
+            return this.name || 'process instance';
+        },
+        paletteLabel: 'process instance',
+    });
+</script>
+
+<script type="text/x-red" data-template-name="process-instance">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-zeebe"><i class="fa fa-server"></i> Zeebe Broker</label>
+        <input type="text" id="node-input-zeebe" placeholder="Zeebe Broker" />
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="process-instance">
+    <p>When a Node-RED message is received at the input, a new process instance is created in Zeebe. When the process instance has been created, the output sends a Node-RED message containing information like the processInstanceKey.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload.processId <span class="property-type">string</span></dt>
+        <dd>Id of an existing BPMN process.</dd>
+
+        <dt class="optional">payload.variables <span class="property-type">object</span></dt>
+        <dd>Instance variables as a JSON object.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">object</span></dt>
+                <dd>JSON object containing information about the created process instance.</dd>
+            </dl>
+        </li>
+    </ol>
+
+    <h3>References</h3>
+    <ul>
+        <li>Camunda Cloud Docs: <a href="https://docs.camunda.io/docs/product-manuals/zeebe/deployment-guide/local/quickstart#step-4-create-a-workflow-instance">Process Intances</a></li>
+        <li>zeebe-node docs: <a href="https://www.npmjs.com/package/zeebe-node#start-a-workflow-instance">createProcessInstance</a></li>
+    </ul>
+</script>

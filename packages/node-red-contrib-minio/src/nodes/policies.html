@@ -1,0 +1,179 @@
+<script type="text/javascript">
+
+    RED.nodes.registerType('minio-policies', {
+        category: 'minio',
+        color: '#fff',
+        defaults: {
+            policies_name: { value: "" },
+            host: { value: "", type: "minio-config", required: true },
+            policies_operation: { value: "" },
+            policies_bucket: { value: "" },
+            policies_policy: { value: "" }
+        },
+        inputs: 1,
+        outputs: 2,
+        outputLabels: ["Output", "Error"],
+        icon: "minio.png",
+        label: function () {
+            return this.policies_name || "Bucket Policy Operations";
+        },
+        paletteLabel: 'policies'
+    });
+
+    // ====  FUNCTION TO TOGGLE FORM ELEMENT DISPLAY  ===============================================
+    function toggleVisibilityPolicies(elementArray) {
+        let element;
+        for (element of elementArray) {
+            let x = document.getElementById(element[0]);
+            if (element[1]) {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    }
+
+    // ====  FUNCTION TO DECIDE WHICH FORM ELEMENTS TO DISPLAY  =====================================
+    function inputVisibilityPolicies(elementId) {
+        let selection = document.getElementById(elementId).value;
+        let bitwise = 0;
+
+        switch (selection) {
+            case "getBucketPolicy":
+                bitwise = 1;
+                break;
+            case "setBucketPolicy":
+                bitwise = 3;
+                break;
+            case "default":
+                bitwise = 0;
+        }
+
+        let elementArray = [];
+
+        let elementIds = [
+            [1, "policies_bucketName"],
+            [2, "policies_bucketPolicy"]
+        ]
+
+        for (elementId of elementIds) {
+            let isVisible = false;
+
+            if (bitwise & elementId[0]) {
+                isVisible = true;
+            }
+            elementArray.push([elementId[1], isVisible])
+        }
+        toggleVisibilityPolicies(elementArray)
+    }
+
+</script>
+
+
+
+<!-- ====  NODE EDIT FORM  ==================================================================================== -->
+
+<script type="text/html" data-template-name="minio-policies">
+    <div class="form-row">
+        <label for="node-input-policies_name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-policies_name" placeholder="MinIO File Operations">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-server"></i> MinIO Host</label>
+        <input type="text" id="node-input-host" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-policies_operation"><i class="fa fa-wrench"></i> Operation</label>
+        <select type="text" id="node-input-policies_operation" onchange="inputVisibilityPolicies('node-input-policies_operation')">
+            <option value="default">--Select File Object Operation--</option>
+            <option value="getBucketPolicy">getBucketPolicy</option>
+            <option value="setBucketPolicy">setBucketPolicy</option>
+        ;
+        </select>        
+    </div>
+    <div class="form-row" id="policies_bucketName" style="display: none">
+        <label for="node-input-policies_bucket"><i class="fa fa-database"></i> Bucket</label>
+        <input type="text" id="node-input-policies_bucket" placeholder="Bucket Name">
+    </div>
+    <div class="form-row" id="policies_bucketPolicy" style="display: none">
+        <label for="node-input-policies_policy"><i class="fa fa-book"></i> Policy</label>
+        <input type="text" id="node-input-policies_policy" placeholder="Policy">
+    </div>
+</script>
+
+
+<!-- ====  NODE HELP INFORMATION  ==================================================================================== -->
+
+<script type="text/html" data-help-name="minio-policies">
+
+    <h1>MinIO Bucket Policy Operations</h1>
+    <p>For each operation, paramenters can either be set in the Edit Node dialogue, 
+    or passed in to the node via the node input. Parameters passed in will override any parameters 
+    set in the Edit Node dialogue.</p>
+    <p>The bucket <b><i>Operation</i></b> can be passed in to the node by setting the appropriate incoming value of <code>msg.operation</code></p>
+    
+    <h2>1. <i>getBucketPolicy</i></h2>
+    
+    <h3>Description</h3>
+    <p>
+        Get the bucket policy associated with the specified bucket. If <code>objectPrefix</code>
+        is not empty, the bucket policy will be filtered based on object permissions
+        as well.
+    </p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket.</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">The node will output confirmation, in the form of a JS object, as to whether or not the bucket policy exists, and if it does, the details of the policy, e.g. <code>{"getBucketPolicy":true, "policy":{...} }</code></td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+    
+    <hr>
+
+
+    <h2>2. <i>setBucketPolicy</i></h2>
+    
+    <h3>Description</h3>
+    <p>Set the bucket policy on the specified bucket. <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html">bucketPolicy</a> is detailed here.</p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket.</td></tr>
+    
+        <tr><td valign="top"><i class="fa fa-book">&#x202F;</i></td><td valign="top"><b>Policy</b></td><td><b><code>bucketPolicy</code></b> ( <code>msg.bucketPolicy</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Bucket policy.</td></tr>
+    
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">The node will output confirmation, in the form of a JS object, as to whether or not the bucket policy has been set, e.g. <code>{"setBucketPolicy":true}</code></td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+      
+    <hr>
+
+    
+
+</script>

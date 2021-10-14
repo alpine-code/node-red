@@ -1,0 +1,34 @@
+[
+    {
+        "id": "8494146c.8a88d8",
+        "type": "task-worker",
+        "z": "b71ce72e.d756f8",
+        "name": "",
+        "maxActiveJobs": 32,
+        "timeout": 1000,
+        "x": 250,
+        "y": 360,
+        "wires": [["adc61cda.dd862"]]
+    },
+    {
+        "id": "67eef6db.de8958",
+        "type": "complete-task",
+        "z": "b71ce72e.d756f8",
+        "name": "",
+        "x": 640,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "adc61cda.dd862",
+        "type": "function",
+        "z": "b71ce72e.d756f8",
+        "name": "do some work",
+        "func": "/**\n * Do some work here and make sure, the message\n * is routed to the 'complete' node.\n */\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 440,
+        "y": 360,
+        "wires": [["67eef6db.de8958"]]
+    }
+]

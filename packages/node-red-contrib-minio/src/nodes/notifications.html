@@ -1,0 +1,333 @@
+<script type="text/javascript">
+
+    RED.nodes.registerType('minio-notifications', {
+        category: 'minio',
+        color: '#fff',
+        defaults: {
+            notifications_name: { value: "" },
+            host: { value: "", type: "minio-config", required: true },
+            notifications_operation: { value: "" },
+            notifications_bucket: { value: "" },
+            notifications_notificationconfig: { value: "" },
+            notifications_prefix: { value: "" },
+            notifications_suffix: { value: "" },
+            notifications_events: { value: "" },
+            notifications_events_object_created_put: { value: true },
+            notifications_events_object_created_post: { value: true },
+            notifications_events_object_created_copy: { value: true },
+            notifications_events_object_created_complete_multipart_upload: { value: true },
+            notifications_events_object_removed_delete: { value: true },
+            notifications_events_object_accessed_get: { value: true },
+            notifications_events_object_accessed_head: { value: true }
+        },
+        inputs: 1,
+        outputs: 2,
+        outputLabels: ["Output", "Error"],
+        icon: "minio.png",
+        label: function () {
+            return this.notifications_name || "Bucket Notification Operations";
+        },
+        paletteLabel: 'notifications'
+    });
+
+    // ====  FUNCTION TO TOGGLE FORM ELEMENT DISPLAY  ===============================================
+    function toggleVisibilityNotifications(elementArray) {
+        let element;
+        for (element of elementArray) {
+            let x = document.getElementById(element[0]);
+            if (element[1]) {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    }
+
+    // ====  FUNCTION TO DECIDE WHICH FORM ELEMENTS TO DISPLAY  =====================================
+    function inputVisibilityNotifications(elementId) {
+        let selection = document.getElementById(elementId).value;
+        let bitwise = 0;
+
+        switch (selection) {
+            case "getBucketNotification":
+                bitwise = 1;
+                break;
+            case "setBucketNotification":
+                bitwise = 3;
+                break;
+            case "removeAllBucketNotification":
+                bitwise = 1;
+                break;
+            case "listenBucketNotification":
+                bitwise = 29;
+                break;
+            case "default":
+                bitwise = 0;
+        }
+
+        let elementArray = [];
+
+        let elementIds = [
+            [1, "notifications_bucketName"],
+            [2, "notifications_bucketNotificationConfig"],
+            [4, "notifications_prefix"],
+            [8, "notifications_suffix"],
+            [16, "notifications_events"]
+        ]
+
+        for (elementId of elementIds) {
+            let isVisible = false;
+
+            if (bitwise & elementId[0]) {
+                isVisible = true;
+            }
+            elementArray.push([elementId[1], isVisible])
+        }
+        toggleVisibilityNotifications(elementArray)
+    }
+
+</script>
+
+
+
+<!-- ====  NODE EDIT FORM  ==================================================================================== -->
+
+<script type="text/html" data-template-name="minio-notifications">
+    <div class="form-row">
+        <label for="node-input-notifications_name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-notifications_name" placeholder="MinIO File Operations">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-server"></i> MinIO Host</label>
+        <input type="text" id="node-input-host" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-notifications_operation"><i class="fa fa-wrench"></i> Operation</label>
+        <select type="text" id="node-input-notifications_operation" onchange="inputVisibilityNotifications(id)">
+            <option value="default">--Select File Object Operation--</option>
+            <option value="getBucketNotification">getBucketNotification</option>
+            <option value="setBucketNotification">setBucketNotification</option>
+            <option value="removeAllBucketNotification">removeAllBucketNotification</option>
+            <option value="listenBucketNotification">listenBucketNotification</option>
+        ;
+        </select>        
+    </div>
+    <div class="form-row" id="notifications_bucketName" style="display: none">
+        <label for="node-input-notifications_bucket"><i class="fa fa-database"></i> Bucket</label>
+        <input type="text" id="node-input-notifications_bucket" placeholder="Bucket Name">
+    </div>
+    <div class="form-row" id="notifications_bucketNotificationConfig" style="display: none">
+        <label for="node-input-notifications_object"><i class="fa fa-cogs"></i> Config</label>
+        <input type="text" id="node-input-notifications_object" placeholder="Bucket Notification Config">
+    </div>
+    <div class="form-row" id="notifications_prefix" style="display: none">
+        <label for="node-input-notifications_prefix"><i class="fa fa-step-backward"></i> Prefix</label>
+        <input type="text" id="node-input-notifications_prefix" placeholder="Prefix">
+    </div>
+    <div class="form-row" id="notifications_suffix" style="display: none">
+        <label for="node-input-notifications_suffix"><i class="fa fa-step-forward"></i> Suffix</label>
+        <input type="text" id="node-input-notifications_suffix" placeholder="Suffix">
+    </div>
+    <div id="notifications_events" style="display: none">
+        <div class="form-row" id="notifications_events_heading">
+            <b>Supported Event Types:</b>
+        </div>
+
+        <div id="notifications_events_object_created_put" style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: nowrap">
+            <div style="width: 118px; height: 30px; align-items: center; text-align: right">
+                <label for="node-input-notifications_events_object_created_put"></label>
+                <input type="checkbox" id="node-input-notifications_events_object_created_put">
+            </div>
+            <div style="width: 10px; height: 30px"> </div>
+            <div style="height: 30px; align-content: flex-end; line-height: 36px">
+                s3:ObjectCreated:Put
+            </div>
+        </div>
+
+        <div id="notifications_events_object_created_post" style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: nowrap">
+            <div style="width: 118px; height: 30px; align-items: center; text-align: right">
+                <label for="node-input-notifications_events_object_created_post"></label>
+                <input type="checkbox" id="node-input-notifications_events_object_created_post">
+            </div>
+            <div style="width: 10px; height: 30px"> </div>
+            <div style="height: 30px; align-content: flex-end; line-height: 36px">
+                s3:ObjectCreated:Post
+            </div>
+        </div>
+
+        <div id="notifications_events_object_created_copy" style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: nowrap">
+            <div style="width: 118px; height: 30px; align-items: center; text-align: right">
+                <label for="node-input-notifications_events_object_created_copy"></label>
+                <input type="checkbox" id="node-input-notifications_events_object_created_copy">
+            </div>
+            <div style="width: 10px; height: 30px"> </div>
+            <div style="height: 30px; align-content: flex-end; line-height: 36px">
+                s3:ObjectCreated:Copy
+            </div>
+        </div>
+
+        <div id="notifications_events_object_created_complete_multipart_upload" style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: nowrap">
+            <div style="width: 118px; height: 30px; align-items: center; text-align: right">
+                <label for="node-input-notifications_events_object_created_complete_multipart_upload"></label>
+                <input type="checkbox" id="node-input-notifications_events_object_created_complete_multipart_upload">
+            </div>
+            <div style="width: 10px; height: 30px"> </div>
+            <div style="height: 30px; align-content: flex-end; line-height: 36px">
+                s3:ObjectCreated:CompleteMultipartUpload
+            </div>
+        </div>
+
+        <div id="notifications_events_object_removed_delete" style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: nowrap">
+            <div style="width: 118px; height: 30px; align-items: center; text-align: right">
+                <label for="node-input-notifications_events_object_removed_delete"></label>
+                <input type="checkbox" id="node-input-notifications_events_object_removed_delete">
+            </div>
+            <div style="width: 10px; height: 30px"> </div>
+            <div style="height: 30px; align-content: flex-end; line-height: 36px">
+                s3:ObjectRemoved:Delete
+            </div>
+        </div>
+
+        <div id="notifications_events_object_accessed_get" style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: nowrap">
+            <div style="width: 118px; height: 30px; align-items: center; text-align: right">
+                <label for="node-input-notifications_events_object_accessed_get"></label>
+                <input type="checkbox" id="node-input-notifications_events_object_accessed_get">
+            </div>
+            <div style="width: 10px; height: 30px"> </div>
+            <div style="height: 30px; align-content: flex-end; line-height: 36px">
+                s3:ObjectAccessed:Get
+            </div>
+        </div>
+       
+        <div id="notifications_events_object_accessed_head" style="display: flex; justify-content: flex-start; align-items: center; flex-wrap: nowrap">
+            <div style="width: 118px; height: 30px; align-items: center; text-align: right">
+                <label for="node-input-notifications_events_object_accessed_head"></label>
+                <input type="checkbox" id="node-input-notifications_events_object_accessed_head">
+            </div>
+            <div style="width: 10px; height: 30px"> </div>
+            <div style="height: 30px; align-content: flex-end; line-height: 36px">
+                s3:ObjectAccessed:Head
+            </div>
+        </div>
+
+    </div>
+</script>
+
+
+<!-- ====  NODE HELP INFORMATION  ==================================================================================== -->
+
+<script type="text/html" data-help-name="minio-notifications">
+
+    <h1>MinIO Bucket Notification Operations</h1>
+    <p>For each operation, paramenters can either be set in the Edit Node dialogue, 
+    or passed in to the node via the node input. Parameters passed in will override any parameters 
+    set in the Edit Node dialogue.</p>
+    <p>The bucket <b><i>Operation</i></b> can be passed in to the node by setting the appropriate incoming value of <code>msg.operation</code></p>
+    
+    <h2>1. <i>getBucketNotification</i></h2>
+    
+    <h3>Description</h3>
+    <p>Creates a new bucket.</p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket to be created.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-globe">&#x202F;</i></td><td valign="top"><b>Region</b></td><td><b><code>region</code></b> ( <code>msg.region</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Region where the bucket is to be created. (optional)</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">The node will output confirmation, in the form of a JS object, as to whether or not the bucket was created, e.g. <code>{"makeBucket":true}</code></td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+    
+    <hr>
+
+
+    <h2>2. <i>setBucketNotification</i></h2>
+    
+    <h3>Description</h3>
+    <p>List all buckets.</p>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">The node will output a JS object in the form <code>{"listBuckets":[...]}</code> containing an array of objects in the form <code>{"name":"bucketname","creationDate": "yyyy-mm-ddThh:mm:ss.sssZ"}</code> for each bucket.</td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+
+    <hr>
+
+
+    <h2>3. <i>removeAllBucketNotification</i></h2>
+    
+    <h3>Description</h3>
+    <p>Checks if a bucket exists.</p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket to be checked.</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">The node will output confirmation, in the form of a JS object, as to whether or not the bucket exists, e.g. <code>{"bucketExists":true}</code></td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+    
+    <hr>
+
+    
+    <h2>4. <i>listenBucketNotification</i></h2>
+    
+    <h3>Description</h3>
+    <p>Removes a bucket.</p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket to be removed.</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">The node will output confirmation, in the form of a JS object, as to whether or not the bucket has been removed, e.g. <code>{"removeBucket":true}</code></td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+    
+    <hr>
+
+    
+
+</script>

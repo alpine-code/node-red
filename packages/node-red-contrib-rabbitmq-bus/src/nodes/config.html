@@ -1,0 +1,33 @@
+<script type="text/javascript">
+    RED.nodes.registerType('rabbitmq-bus-config', {
+        category: 'config',
+        defaults: {
+            name: { type: "text", value: "RabbitMQ Instance", required: true },
+            url: { type: "text", required: true },
+            namespace: { type: "text", required: true },
+            app: { type: "text", required: true },
+        },
+        label: function () {
+            return this.name;
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="rabbitmq-bus-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Host Name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-url"><i class="fa fa-server"></i> Url</label>
+        <input type="text" id="node-config-input-url" placeholder="your.rabbitmq-host.com">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-namespace"><i class="fa fa-server"></i> Namespace</label>
+        <input type="text" id="node-config-input-namespace" placeholder="myNamespace">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-app"><i class="fa fa-server"></i> App</label>
+        <input type="text" id="node-config-input-app" placeholder="myApp">
+    </div>
+</script>

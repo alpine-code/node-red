@@ -1,0 +1,26 @@
+kind: pipeline
+type: kubernetes
+name: default
+
+steps:
+  - name: push commit
+    image: appleboy/drone-git-push:0.2.0-linux-amd64
+    settings:
+      branch: master
+      remote: git@github.com:alpine-code/node-red-contrib-minio.git
+      ssh_key:
+        from_secret: ssh_private_key
+      force: false
+      commit: true
+      commit_message: "Drone [CI SKIP]"
+      author_name: drone
+      author_email: drone@alpine-code.com
+  - name: npm
+    image: plugins/npm
+    settings:
+      username:
+        from_secret: npm_username
+      password:
+        from_secret: npm_password
+      email:
+        from_secret: npm_email

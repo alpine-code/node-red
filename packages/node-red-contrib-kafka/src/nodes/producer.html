@@ -1,0 +1,35 @@
+<script type="text/javascript">
+    RED.nodes.registerType('kafka-producer', {
+      category: 'kafka',
+      color: "#fff",
+      defaults: {
+        name: { value: '' },
+        kafka: { type: 'kafka-config', required: true },
+      },
+      inputs: 1,
+      outputs: 0,
+      icon: 'kafka.png',
+      label: function () {
+        return this.name || 'Kafka Producer';
+      },
+      labelStyle: function () {
+        return this.name ? 'node_label_italic' : '';
+      },
+      paletteLabel: 'producer',
+    });
+  </script>
+
+  <script type="text/x-red" data-template-name="kafka-producer">
+    <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-kafka"><i class="icon-tag"></i> Kafka</label>
+        <input type="text" id="node-input-kafka" placeholder="Kafka">
+    </div>
+  </script>
+  
+  <script type="text/x-red" data-help-name="kafka-producer" data-lang="en-US">
+     
+  </script>

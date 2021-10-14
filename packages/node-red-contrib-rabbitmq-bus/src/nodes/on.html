@@ -1,0 +1,47 @@
+<script type="text/javascript">
+
+    RED.nodes.registerType('rabbitmq-bus-on', {
+        category: 'rabbitmq',
+        color: '#fff',
+        defaults: {
+            host: { value: "", type: "rabbitmq-bus-config", required: true },
+            exchangeName: { value: "" },
+            consumerName: { value: "" }
+        },
+        inputs: 0,
+        outputs: 1,
+        outputLabels: ["Output", "Error"],
+        icon: "rabbitmq.png",
+        label: function () {
+            return this.onName || "On";
+        },
+        paletteLabel: 'on'
+    });
+
+</script>
+
+
+
+<!-- ====  NODE EDIT FORM  ==================================================================================== -->
+
+<script type="text/html" data-template-name="rabbitmq-bus-on">
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-server"></i> RabbitMQ Host</label>
+        <input type="text" id="node-input-host" />
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-exchangeName"><i class="fa fa-server"></i> Exchange</label>
+        <input type="text" id="node-input-exchangeName" />
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-consumerName"><i class="fa fa-server"></i> Consumer</label>
+        <input type="text" id="node-input-consumerName" />
+    </div>
+</script>
+
+
+<!-- ====  NODE HELP INFORMATION  ==================================================================================== -->
+
+<script type="text/html" data-help-name="rabbitmq-bus-on">
+
+</script>

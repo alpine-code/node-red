@@ -1,0 +1,215 @@
+<script type="text/javascript">
+  RED.nodes.registerType('kafka-config', {
+    category: 'config',
+    defaults: {
+      name: { value: 'Kafka' },
+
+      brokers: { value: [], required: true },
+      schemaRegistryHost: { value: '', required: true },
+      schemaRegistryUsername: { value: '', required: true },
+      schemaRegistryPassword: { value: '', required: true },
+
+      clientId: { required: true },
+      connectionTimeout: { value: 3000, required: true },
+      requestTimeout: { value: 25000, required: true },
+
+      logLevel: { value: "error", required: true },
+
+      advancedRetry: { value: false, required: true },
+      maxRetryTime: { value: 30000, required: true },
+      initialRetryTime: { value: 300, required: true },
+      factor: { value: 0.2, required: true },
+      multiplier: { value: 2, required: true },
+      retries: { value: 5, required: true },
+
+      auth: { value: "none", required: true },
+
+      tlsSelfSign: { value: false, required: false },
+      tlsCaCert: { required: false },
+      tlsClientCert: { required: false },
+      tlsPrivateKey: { required: false },
+      tlsPasshprase: { required: false },
+
+      saslSsl: { value: true, required: false },
+      saslMechanism: { value: 'plain', required: false }
+    },
+    credentials: {
+      saslUsername: { type: "text", required: false },
+      saslPassword: { type: "password", required: false }
+    },
+    label: function () {
+      return this.name;
+    },
+    labelStyle: function () {
+      return "node_label_italic";
+    },
+    oneditprepare: function () {
+      function checkAdvancedRetry(checked) {
+        if (checked) {
+          $("#node-config-advancedRetry").show();
+        }
+        else {
+          $("#node-config-advancedRetry").hide();
+        }
+      }
+      function checkAuthMethod(val) {
+        if (val == "tls") {
+          $("#node-config-sasl").hide();
+          $("#node-config-tls").show();
+        }
+        else if (val == "sasl") {
+          $("#node-config-tls").hide();
+          $("#node-config-sasl").show();
+        }
+        else {
+          $("#node-config-sasl").hide();
+          $("#node-config-tls").hide();
+        }
+      }
+      checkAuthMethod($("#node-config-input-auth").val());
+      checkAdvancedRetry($("#node-config-input-advancedRetry").is(':checked'));
+      $('#node-config-input-advancedRetry').change(function () {
+        checkAdvancedRetry($(this).is(':checked'));
+      })
+      $("#node-config-input-auth").change(function () {
+        checkAuthMethod($(this).val());
+      });
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="kafka-config">
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="icon-bookmark"></i> Name</label>
+    <input type="text" id="node-config-input-name">
+  </div>
+
+	<div class="form-row">
+    <label for="node-config-input-brokers"><i class="fa fa-server"></i> Brokers</label>
+    <input id="node-config-input-brokers" type="text" placeholder="kafka1:9092,kafka2:9092,..." >
+	</div>
+  <div class="form-row">
+    <label for="node-config-input-schemaRegistryHost"><i class="fa fa-server"></i> Schema Registry Host</label>
+    <input id="node-config-input-schemaRegistryHost" type="text" placeholder="http://registry:8081/" >
+	</div>
+  <div class="form-row">
+    <label for="node-config-input-schemaRegistryUsername"><i class="fa fa-user"></i> Schema Registry Username</label>
+    <input id="node-config-input-schemaRegistryUsername" type="text" placeholder="Username" >
+	</div>
+  <div class="form-row">
+    <label for="node-config-input-schemaRegistryPassword"><i class="fa fa-key"></i> Schema Registry Password</label>
+    <input  id="node-config-input-schemaRegistryPassword" type="password" placeholder="Password" >
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-clientId"><i class="fa fa-id-card-o"></i> Client ID</label>
+    <input id="node-config-input-clientId" type="text" placeholder="Client ID" >
+  </div>
+
+  <div class="form-row">
+    <label for="node-config-input-connectionTimeout"><i class="fa fa-clock-o"></i> Connection Timeout</label>
+    <input id="node-config-input-connectionTimeout" type="number" step="1" min="1">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-requestTimeout"><i class="fa fa-clock-o"></i> Request Timeout</label>
+    <input id="node-config-input-requestTimeout" type="number" step="1" min="1">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-logLevel"><i class="fa fa-file-text-o"></i> Log Level</label>
+    <select id="node-config-input-logLevel">            
+      <option value="error">ERROR</option>
+      <option value="warn">WARN</option>
+      <option value="info">INFO</option>
+      <option value="debug">DEBUG</option>
+      <option value="nothing">NOTHING</option>
+    </select>
+  </div>
+
+  <div class="form-row">
+    <label for="node-config-input-advancedRetry" style="display: inline-block; width: auto; vertical-align: top;"><i class="fa fa-clock-o"></i> Advanced Retry Options</label>
+    <input id="node-config-input-advancedRetry" type="checkbox" style="width:30%">
+  </div>
+  <div id="node-config-advancedRetry" class="form-row" style="margin-left:30px">
+    <div class="form-row">
+      <label for="node-config-input-maxRetryTime"><i class="fa fa-clock-o"></i> Max Retry Time</label>
+      <input id="node-config-input-maxRetryTime" type="number" step="1" min="1">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-initialRetryTime"><i class="fa fa-clock-o"></i> Initial Retry Time</label>
+      <input id="node-config-input-initialRetryTime" type="number" step="1" min="1">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-factor"><i class="fa fa-calculator"></i> Factor</label>
+      <input id="node-config-input-factor" type="number" step="0.1" min="0">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-multiplier"><i class="fa fa-calculator"></i> Multiplier</label>
+      <input id="node-config-input-multiplier" type="number" step="1" min="1">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-retries"><i class="fa fa-refresh"></i> Retries</label>
+      <input id="node-config-input-retries" type="number" step="1" min="1">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <label for="node-config-input-auth"><i class="fa fa-file-text-o"></i> Auth</label>
+    <select id="node-config-input-auth">            
+      <option value="none">NONE</option>
+      <option value="tls">TLS</option>
+      <option value="sasl">SASL</option>
+    </select>
+  </div>
+
+  <div id="node-config-tls" class="form-row" style="margin-left:30px">
+		<div class="form-row">
+			<label for="node-config-input-tlsCaCert"><i class="fa fa-certificate"></i> CA Cert</label>
+			<input  id="node-config-input-tlsCaCert" type="text" placeholder="/var/..." >
+		</div>
+		<div class="form-row">
+			<label for="node-config-input-tlsClientCert"><i class="fa fa-certificate"></i> Client Cert</label>
+			<input  id="node-config-input-tlsClientCert" type="text" placeholder="/var/..." >
+		</div>
+		<div class="form-row">
+			<label for="node-config-input-tlsPrivateKey"><i class="fa fa-tag"></i> Private Key</label>
+			<input  id="node-config-input-tlsPrivateKey" type="text" placeholder="/var/..." >
+		</div>
+		<div class="form-row">
+			<label for="node-config-input-tlsPasshprase"><i class="fa fa-key"></i> Passphrase</label>
+			<input  id="node-config-input-tlsPasshprase" type="password" placeholder="Passphrase" >
+    </div>
+		<div class="form-row">
+			<input type="checkbox" id="node-config-input-tlsSelfSign" style="display: inline-block; width: auto; vertical-align: top;">
+			<label for="node-config-input-tlsSelfSign" style="width: auto">Self Sign</label>
+		</div>
+	</div>
+
+	<div id="node-config-sasl" class="form-row" style="margin-left:30px">
+		<div class="form-row">
+			<label for="node-config-input-saslMechanism"><i class="fa fa-lock"></i> Mechanism</label>
+			<select id="node-config-input-saslMechanism">            
+				<option value="plain">PLAIN</option>
+				<option value="scram-sha-256">SCRAM-SHA-256</option>
+				<option value="scram-sha-512">SCRAM-SHA-512</option>
+			</select>
+		</div>
+		<div class="form-row">
+			<label for="node-config-input-saslUsername"><i class="fa fa-id-card-o"></i> Username</label>
+			<input  id="node-config-input-saslUsername" type="text" placeholder="Username" >
+		</div>
+		<div class="form-row">
+			<label for="node-config-input-saslPassword"><i class="fa fa-key"></i> Password</label>
+			<input  id="node-config-input-saslPassword" type="password" placeholder="Password" >
+		</div>
+		<div class="form-row">
+			<input type="checkbox" id="node-config-input-saslSsl" style="display: inline-block; width: auto; vertical-align: top;">
+			<label for="node-config-input-saslSsl" style="width: auto">Use SSL</label>
+		</div>
+	</div>
+
+
+
+</script>
+
+<script type="text/x-red" data-help-name="kafka-config" data-lang="en-US">
+
+</script>

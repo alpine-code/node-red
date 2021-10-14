@@ -1,0 +1,45 @@
+<script type="text/javascript">
+    RED.nodes.registerType('minio-config', {
+        category: 'config',
+        defaults: {
+            name: { type: "text", value: "MinIO Instance", required: true },
+            host: { type: "text", required: true },
+            port: { type: "text", equired: false },
+            useSsl: { type: "checkbox", required: false }
+        },
+        credentials: {
+            accessKey: { type: "text" },
+            secretKey: { type: "password" }
+        },
+        label: function () {
+            return this.name;
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="minio-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="MinIO Host Name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-server"></i> MinIO Host</label>
+        <input type="text" id="node-config-input-host" placeholder="your.minio-host.com">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-port"><i class="fa fa-wrench"></i> Port</label>
+        <input type="text" id="node-config-input-port" placeholder="443">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-accessKey"><i class="fa fa-key"></i> Access Key</label>
+        <input type="text" id="node-config-input-accessKey">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-secretKey"><i class="fa fa-key"></i> Secret Key</label>
+        <input type="password" id="node-config-input-secretKey">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-useSsl"><i class="fa fa-wrench"></i> Use SSL</label>
+        <input type="checkbox" id="node-config-input-useSsl">
+    </div>
+</script>

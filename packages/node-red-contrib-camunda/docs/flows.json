@@ -1,0 +1,370 @@
+[
+    {
+    "id": "803341dd.dea93",
+    "type": "tab",
+    "label": "Camunda",
+    "disabled": false,
+    "info": ""
+    },
+    {
+    "id": "d5ca3e82.a51b",
+    "type": "camunda-task-worker",
+    "z": "803341dd.dea93",
+    "name": "",
+    "camunda": "14c44783.f1f468",
+    "topic": "worker1",
+    "x": 150,
+    "y": 580,
+    "wires": [
+    [
+    "eefe5c5f.f18d7"
+    ]
+    ]
+    },
+    {
+    "id": "eefe5c5f.f18d7",
+    "type": "function",
+    "z": "803341dd.dea93",
+    "name": "do some work",
+    "func": "msg.payload.processVariables.set(\"ok\", true);\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 320,
+    "y": 580,
+    "wires": [
+    [
+    "64a41cbf.bc2364"
+    ]
+    ]
+    },
+    {
+    "id": "64a41cbf.bc2364",
+    "type": "camunda-complete-task",
+    "z": "803341dd.dea93",
+    "name": "",
+    "x": 500,
+    "y": 580,
+    "wires": []
+    },
+    {
+    "id": "80f60da1.cbe95",
+    "type": "camunda-workflow-instance",
+    "z": "803341dd.dea93",
+    "name": "",
+    "camunda": "14c44783.f1f468",
+    "x": 930,
+    "y": 340,
+    "wires": [
+    []
+    ]
+    },
+    {
+    "id": "36a9668d.e1501a",
+    "type": "inject",
+    "z": "803341dd.dea93",
+    "name": "inject",
+    "topic": "",
+    "payload": "{}",
+    "payloadType": "json",
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "x": 170,
+    "y": 340,
+    "wires": [
+    [
+    "48b8d134.fb241"
+    ]
+    ]
+    },
+    {
+    "id": "48b8d134.fb241",
+    "type": "change",
+    "z": "803341dd.dea93",
+    "name": "prepare",
+    "rules": [
+    {
+    "t": "set",
+    "p": "payload.processDefinitionKey",
+    "pt": "msg",
+    "to": "process1",
+    "tot": "str"
+    },
+    {
+    "t": "set",
+    "p": "payload.processBusinessKey",
+    "pt": "msg",
+    "to": "businessKey1",
+    "tot": "str"
+    }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 320,
+    "y": 340,
+    "wires": [
+    [
+    "952308c4.bb8a98"
+    ]
+    ]
+    },
+    {
+    "id": "67f6b1e2.b2611",
+    "type": "camunda-publish-message",
+    "z": "803341dd.dea93",
+    "name": "",
+    "camunda": "14c44783.f1f468",
+    "x": 510,
+    "y": 420,
+    "wires": [
+    []
+    ]
+    },
+    {
+    "id": "f6edccec.f4e7a",
+    "type": "change",
+    "z": "803341dd.dea93",
+    "name": "prepare",
+    "rules": [
+    {
+    "t": "set",
+    "p": "payload.messageName",
+    "pt": "msg",
+    "to": "start",
+    "tot": "str"
+    },
+    {
+    "t": "set",
+    "p": "payload.processBusinessKey",
+    "pt": "msg",
+    "to": "businessKey1",
+    "tot": "str"
+    }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 320,
+    "y": 420,
+    "wires": [
+    [
+    "67f6b1e2.b2611"
+    ]
+    ]
+    },
+    {
+    "id": "4deb67bd.c91628",
+    "type": "inject",
+    "z": "803341dd.dea93",
+    "name": "inject",
+    "topic": "",
+    "payload": "{}",
+    "payloadType": "json",
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "x": 170,
+    "y": 420,
+    "wires": [
+    [
+    "f6edccec.f4e7a"
+    ]
+    ]
+    },
+    {
+    "id": "952308c4.bb8a98",
+    "type": "camunda-variables-helper",
+    "z": "803341dd.dea93",
+    "name": "",
+    "x": 500,
+    "y": 340,
+    "wires": [
+    [
+    "bd2eee05.8aae8"
+    ]
+    ]
+    },
+    {
+    "id": "bd2eee05.8aae8",
+    "type": "function",
+    "z": "803341dd.dea93",
+    "name": "set variables",
+    "func": "msg.payload.processVariables = new msg.variables();\nmsg.payload.processVariables.set(\"string\", \"string\");\nmsg.payload.processVariables.set(\"integer\", 10);\nmsg.payload.processVariables.set(\"double\", 1.1);\nmsg.payload.processVariables.set(\"boolean\", true);\nmsg.payload.processVariables.set(\"json\", {});\nmsg.payload.processVariables.set(\"date\", new Date());\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 710,
+    "y": 340,
+    "wires": [
+    [
+    "80f60da1.cbe95"
+    ]
+    ]
+    },
+    {
+    "id": "c9d4eeed.81134",
+    "type": "camunda-publish-message",
+    "z": "803341dd.dea93",
+    "name": "",
+    "camunda": "14c44783.f1f468",
+    "x": 510,
+    "y": 500,
+    "wires": [
+    []
+    ]
+    },
+    {
+    "id": "7b49bf9.e6d084",
+    "type": "change",
+    "z": "803341dd.dea93",
+    "name": "prepare",
+    "rules": [
+    {
+    "t": "set",
+    "p": "payload.messageName",
+    "pt": "msg",
+    "to": "continue",
+    "tot": "str"
+    },
+    {
+    "t": "set",
+    "p": "payload.processBusinessKey",
+    "pt": "msg",
+    "to": "businessKey1",
+    "tot": "str"
+    }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 320,
+    "y": 500,
+    "wires": [
+    [
+    "c9d4eeed.81134"
+    ]
+    ]
+    },
+    {
+    "id": "a986b24d.a9899",
+    "type": "inject",
+    "z": "803341dd.dea93",
+    "name": "inject",
+    "topic": "",
+    "payload": "{}",
+    "payloadType": "json",
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "x": 170,
+    "y": 500,
+    "wires": [
+    [
+    "7b49bf9.e6d084"
+    ]
+    ]
+    },
+    {
+    "id": "838a9fab.e7839",
+    "type": "change",
+    "z": "803341dd.dea93",
+    "name": "prepare",
+    "rules": [
+    {
+    "t": "move",
+    "p": "payload",
+    "pt": "msg",
+    "to": "payload.source",
+    "tot": "msg"
+    },
+    {
+    "t": "set",
+    "p": "payload.deploymentName",
+    "pt": "msg",
+    "to": "process1",
+    "tot": "str"
+    }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 480,
+    "y": 260,
+    "wires": [
+    [
+    "83fea7b2.95d328"
+    ]
+    ]
+    },
+    {
+    "id": "d978fdbe.e9d4e",
+    "type": "inject",
+    "z": "803341dd.dea93",
+    "name": "inject",
+    "topic": "",
+    "payload": "{}",
+    "payloadType": "json",
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "x": 170,
+    "y": 260,
+    "wires": [
+    [
+    "81be6545.ef0f08"
+    ]
+    ]
+    },
+    {
+    "id": "83fea7b2.95d328",
+    "type": "camunda-deploy",
+    "z": "803341dd.dea93",
+    "name": "",
+    "camunda": "14c44783.f1f468",
+    "x": 630,
+    "y": 260,
+    "wires": [
+    []
+    ]
+    },
+    {
+    "id": "81be6545.ef0f08",
+    "type": "file in",
+    "z": "803341dd.dea93",
+    "name": "bpmn file",
+    "filename": "process1.bpmn",
+    "format": "utf8",
+    "chunk": false,
+    "sendError": false,
+    "encoding": "none",
+    "x": 320,
+    "y": 260,
+    "wires": [
+    [
+    "838a9fab.e7839"
+    ]
+    ]
+    },
+    {
+    "id": "14c44783.f1f468",
+    "type": "camunda-config",
+    "z": "",
+    "name": "",
+    "baseUrl": "http://localhost:8080/engine-rest",
+    "basicAuth": true,
+    "username": "admin",
+    "password": "admin"
+    }
+    ]

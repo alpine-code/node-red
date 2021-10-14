@@ -1,0 +1,37 @@
+<script type="text/javascript">
+  RED.nodes.registerType('aws-ses-config', {
+    category: 'config',
+    defaults: {
+      name: { value: 'AWS', required: true },
+      accessKeyId: { value: '', required: true },
+      secretAccessKey: { value: '', required: true },
+      region: { value: 'eu-west-1', required: true }
+    },
+    label: function () {
+      return this.name;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="aws-ses-config">
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="icon-bookmark"></i> Name</label>
+    <input type="text" id="node-config-input-name">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-accessKeyId"><i class="icon-bookmark"></i> Access Key ID</label>
+    <input type="text" id="node-config-input-accessKeyId">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-secretAccessKey"><i class="icon-bookmark"></i> Secret Access Key</label>
+    <input type="text" id="node-config-input-secretAccessKey">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-region"><i class="icon-bookmark"></i> Region</label>
+    <input type="text" id="node-config-input-region">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="aws-ses-config" data-lang="en-US">
+
+</script>

@@ -1,0 +1,180 @@
+<script type="text/javascript">
+  RED.nodes.registerType('google-config', {
+    category: 'config',
+    defaults: {
+      loginType: { value: "oauth", required: true },
+      username: { value: '', required: true }
+    },
+    credentials: {
+      apiKey: { type: 'password' },
+      clientId: { type: 'password' },
+      clientSecret: { type: 'password' },
+      scopes: { type: 'text' },
+      userId: { type: 'text' }
+    },
+    label: function () {
+      return this.username
+    },
+    oneditprepare: function () {
+      var configNode = this;
+      var id = this.id;
+      var pathname = document.location.pathname;
+      if (pathname.slice(-1) != "/") {
+        pathname += "/";
+      }
+      var callback = location.protocol + "//";
+      callback += (location.port == "") ? location.hostname : location.hostname + ":" + location.port;
+      callback += pathname + "google/credentials/" + id + "/auth/callback";
+      $("#node-config-google-tooltip").html("<p>Please configure the authorized <b>Redirect URIs</b> of your app to include the following url:</p>\n<code>" + callback + "</code>");
+    
+      function updateGoogleAuthButton() {
+        var v1 = $("#node-config-input-clientId").val();
+        var v2 = $("#node-config-input-clientSecret").val();
+        var v3 = $("#node-config-input-username").val();
+        var v4 = $("#node-config-input-scopes").val();
+        $("#node-config-start-auth").toggleClass("disabled", (v1.length === 0 || v2.length === 0 || v3.length === 0 || v4.length === 0));
+      }
+      $("#node-config-input-username").on('change keydown paste input', updateGoogleAuthButton);
+      $("#node-config-input-clientId").on('change keydown paste input', updateGoogleAuthButton);
+      $("#node-config-input-clientSecret").on('change keydown paste input', updateGoogleAuthButton);
+      $("#node-config-input-scopes").on('change keydown paste input', updateGoogleAuthButton);
+    
+      updateGoogleAuthButton();
+
+      // 
+      function pollGoogleCredentialsUrl() {
+        $.getJSON(pathname + 'google/credentials/' + id, function (data) {
+          if (data.userId) {
+            updateGoogleUserId(data.userId);
+            delete window.googleConfigNodeIntervalId;
+          } else {
+            window.googleConfigNodeIntervalId = window.setTimeout(pollGoogleCredentialsUrl, 2000);
+          }
+        });
+      }
+
+      function updateGoogleUserId(dn) {
+        $("#node-config-google-client-keys").hide();
+        $("#node-config-google").show();
+        $("#node-config-input-userId").val(dn);
+        var username = $("#node-config-input-username").val();
+        $("#node-config-google-username").html(username);
+      }
+
+      if (this.credentials.userId) {
+        updateGoogleUserId(this.userId);
+      } else {
+        $("#node-config-google-client-keys").show();
+        $("#node-config-google").hide();
+      }
+
+      $("#node-config-start-auth").mousedown(function () {
+        var clientId = $("#node-config-input-clientId").val();
+        var clientSecret = $("#node-config-input-clientSecret").val();
+        var username = $("#node-config-input-username").val();
+        var scopes = $("#node-config-input-scopes").val();
+        var url = 'google/credentials/' + id + '/auth?id=' + id
+          + '&clientId=' + clientId
+          + '&clientSecret=' + clientSecret
+          + '&callback=' + encodeURIComponent(callback)
+          + '&username=' + username
+          + '&scopes=' + scopes;
+        $(this).attr("href", url);
+        window.googleConfigNodeIntervalId = window.setTimeout(pollGoogleCredentialsUrl, 2000);
+      });
+
+      $("#node-config-start-auth").click(function (e) {
+        var clientId = $("#node-config-input-clientId").val();
+        var clientSecret = $("#node-config-input-clientSecret").val();
+        var username = $("#node-config-input-username").val();
+        var scopes = $("#node-config-input-scopes").val();
+        if (clientId === "" || clientSecret === "" || username === "" || scopes === "") {
+          e.preventDefault();
+        }
+      });
+
+      $("#node-config-input-loginType").change(function () {
+        var apiKeyel = $(".input-apiKey-row");
+        var clientIdel = $(".input-clientId-row");
+        var scopesel = $(".input-scopes-row");
+        var secretel = $(".input-clientSecret-row");
+        var buttonel = $(".input-startauth-row");
+        var tooltipel = $("#node-config-force-tooltip");
+
+        var id = $("#node-config-input-loginType option:selected").val();
+        if (id == 'oauth') {
+          apiKeyel.hide();
+          clientIdel.show();
+          scopesel.show();
+          secretel.show();
+          buttonel.show();
+          tooltipel.show();
+        } else if (id == 'APIKey') {
+          apiKeyel.show();
+          clientIdel.hide();
+          scopesel.hide();
+          secretel.hide();
+          buttonel.hide();
+          tooltipel.hide();
+        } else {
+          apiKeyel.hide();
+          clientIdel.hide();
+          scopesel.hide();
+          secretel.hide();
+          buttonel.hide();
+          tooltipel.hide();
+        }
+      });
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="google-config">
+  <div id="node-config-google-client-keys">
+    <div class="form-row">
+      <label for="node-config-input-loginType"><i class="fa fa-plug"></i> Login Type</label>
+      <select type="text" id="node-config-input-loginType" style="width:70%">
+        <!-- <option value="APIKey">API Key</option> -->
+        <option value="oauth">OAuth2</option>
+        <!-- <option value="ServiceAccountCredentials">Service Account Credentials</option> -->
+      </select>
+    </div>
+    <div class="form-tips" id="node-config-google-tooltip">      
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-username"><i class="fa fa-bookmark"></i> User Name</label>
+      <input type="text" id="node-config-input-username" placeholder="example@example.com" />
+    </div>
+    <div class="form-row input-apiKey-row">
+      <label for="node-config-input-apiKey"><i class="fa fa-bookmark"></i> API Key</label>
+      <input type="password" id="node-config-input-apiKey" />
+    </div>
+    <div class="form-row input-clientId-row">
+      <label for="node-config-input-clientId"><i class="fa fa-bookmark"></i> Client Id</label>
+      <input type="password" id="node-config-input-clientId" />
+    </div>
+    <div class="form-row input-clientSecret-row">
+      <label for="node-config-input-clientSecret"><i class="fa fa-lock"></i> Client Secret</label>
+      <input type="password" id="node-config-input-clientSecret" />
+    </div>
+    <div class="form-row input-scopes-row">
+      <label for="node-config-input-scopes"><i class="fa fa-bookmark"></i> Scopes</label>
+      <input type="text" id="node-config-input-scopes" placeholder="https://www.googleapis.com/auth/classroom.courses" />
+    </div>
+    <div class="form-row input-startauth-row">
+      <label>&nbsp;</label>
+      <a class="btn" id="node-config-start-auth" href="#" target="_blank">Authenticate with Google</a>
+    </div>
+  </div>
+  <div id="node-config-google">
+    <div class="form-row">
+        <label><i class="fa fa-user"></i> User</label>
+        <span id="node-config-google-username" class="input-xlarge uneditable-input"></span>
+    </div>
+    <input type="hidden" id="node-config-input-userId">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="google-config" data-lang="en-US">
+
+</script>

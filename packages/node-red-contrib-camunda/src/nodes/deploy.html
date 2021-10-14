@@ -1,0 +1,52 @@
+<script type="text/javascript">
+    RED.nodes.registerType('camunda-deploy', {
+        category: 'camunda',
+        color: '#FFF',
+        defaults: {
+            name: { value: '' },
+            camunda: { required: true, type: 'camunda-config' },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: 'camunda.png',
+        label: function() {
+            return this.name || 'deploy';
+        },
+        paletteLabel: 'deploy'
+    });
+</script>
+
+<script type="text/x-red" data-template-name="camunda-deploy">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-camunda"><i class="fa fa-server"></i> Camunda</label>
+        <input type="text" id="node-input-camunda" placeholder="Camunda" />
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="camunda-deploy">
+    <p>Deploy a bpmn definition to Camunda</p>
+
+    <h3>Inputs</h3>
+
+    <dl class="message-properties">
+        <dt>payload.deploymentName <span class="property-type">string</span></dt>
+        <dd>The deployment name (e.g. 'myWorkflow')</dd>
+
+        <dt>payload.source <span class="property-type">string</span></dt>
+        <dd>The process definition as a UTF8-encoded string</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload.results <span class="property-type">object</span></dt>
+                <dd>JSON object containing informations about the operation.</dd>
+            </dl>
+        </li>
+    </ol>
+</script>

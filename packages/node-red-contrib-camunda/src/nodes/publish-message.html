@@ -1,0 +1,100 @@
+<script type="text/javascript">
+    RED.nodes.registerType('camunda-publish-message', {
+        category: 'camunda',
+        color: '#FFF',
+        defaults: {
+            name: { value: "" },
+            camunda: { required: true, type: "camunda-config" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "camunda.png",
+        label: function () {
+            return this.name || "correlate message";
+        },
+        paletteLabel: 'correlate message'
+    });
+</script>
+
+<script type="text/x-red" data-template-name="camunda-publish-message">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-camunda"><i class="fa fa-server"></i> Camunda</label>
+        <input type="text" id="node-input-camunda" placeholder="Camunda" />
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="camunda-publish-message">
+    <p>When a Node-RED message is received at the input, this node publishes a message to Camunda.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Payload object containing properties for sending a message event to Camunda.</dd>
+
+        <dt>payload.messageName <span class="property-type">string</span></dt>
+        <dd>The name of the message.</dd>
+
+        <dt class="optional">payload.processBusinessKey <span class="property-type">string</span></dt>
+        <dd>Value of the Camunda message correlation bussines key.</dd>
+        
+        <dt class="optional">payload.correlationKeys <span class="property-type">array</span></dt>
+        <dd>
+            <span>Corelation keys as a JSON array.</span>
+            <br />
+            <span>Here are some usage examples:</span>
+            <br />
+<pre>
+{
+    "string": { "type": "string", "value": "string", "valueInfo": {} },
+    "integer": { "type": "integer", "value": 10, "valueInfo": {} },
+    "double": { "type": "double", "value": 1.1, "valueInfo": {} },
+    "boolean": { "type": "boolean", "value": true, "valueInfo": {} },
+    "json": { "type": "json", "value": "{}", "valueInfo": {} },
+    "date": {
+        "type": "date",
+        "value": "2020-06-08T15:16:21.812+0000",
+        "valueInfo": {}
+    }
+}
+</pre>
+            <span>You can also use the variables helper node.</span>
+        </dd>
+
+        <dt class="optional">payload.processVariables <span class="property-type">array</span></dt>
+        <dd>
+            <span>Process variables as a JSON array.</span>
+            <br />
+            <span>Here are some usage examples:</span>
+            <br />
+<pre>
+{
+    "string": { "type": "string", "value": "string", "valueInfo": {} },
+    "integer": { "type": "integer", "value": 10, "valueInfo": {} },
+    "double": { "type": "double", "value": 1.1, "valueInfo": {} },
+    "boolean": { "type": "boolean", "value": true, "valueInfo": {} },
+    "json": { "type": "json", "value": "{}", "valueInfo": {} },
+    "date": {
+        "type": "date",
+        "value": "2020-06-08T15:16:21.812+0000",
+        "valueInfo": {}
+    }
+}
+</pre>
+            <span>You can also use the variables helper node.</span>
+        </dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload.results <span class="property-type">object</span></dt>
+                <dd>JSON object containing informations about the operation.</dd>
+            </dl>
+        </li>
+    </ol>
+</script>

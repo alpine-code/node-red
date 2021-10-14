@@ -1,0 +1,40 @@
+<script type="text/javascript">
+  RED.nodes.registerType('graphql-mutate', {
+    category: 'graphql',
+    color: "#fff",
+    defaults: {
+      name: { value: '' },
+      graphql: { type: 'graphql-config', required: true },
+      mutation: { value: '' },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: 'graphql.svg',
+    label: function () {
+      return this.name || 'GraphQL Mutate';
+    },
+    labelStyle: function () {
+      return this.name ? 'node_label_italic' : '';
+    },
+    paletteLabel: 'mutate',
+  });
+</script>
+
+<script type="text/x-red" data-template-name="graphql-mutate">
+    <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-graphql"><i class="icon-tag"></i> graphql Endpoint</label>
+        <input type="text" id="node-input-graphql" placeholder="Endpoint">
+    </div>
+    <div class="form-row">
+      <label for="node-input-mutation"><i class="icon-tag"></i> Mutation</label>
+      <input type="text" id="node-input-mutation" placeholder="Mutation">
+    </div>
+  </script>
+
+<script type="text/x-red" data-help-name="graphql-mutate" data-lang="en-US">
+
+  </script>

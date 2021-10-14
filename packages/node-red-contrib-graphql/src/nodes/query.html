@@ -1,0 +1,40 @@
+<script type="text/javascript">
+    RED.nodes.registerType('graphql-query', {
+      category: 'graphql',
+      color: "#fff",
+      defaults: {
+        name: { value: '' },
+        graphql: { type: 'graphql-config', required: true },
+        query: { value: '' },
+      },
+      inputs: 1,
+      outputs: 1,
+      icon: 'graphql.svg',
+      label: function () {
+        return this.name || 'GraphQL Query';
+      },
+      labelStyle: function () {
+        return this.name ? 'node_label_italic' : '';
+      },
+      paletteLabel: 'query',
+    });
+  </script>
+
+  <script type="text/x-red" data-template-name="graphql-query">
+    <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-graphql"><i class="icon-tag"></i> graphql Endpoint</label>
+        <input type="text" id="node-input-graphql" placeholder="Endpoint">
+    </div>
+    <div class="form-row">
+      <label for="node-input-query"><i class="icon-tag"></i> Query</label>
+      <input type="text" id="node-input-query" placeholder="Query">
+    </div>
+  </script>
+  
+  <script type="text/x-red" data-help-name="graphql-query" data-lang="en-US">
+     
+  </script>

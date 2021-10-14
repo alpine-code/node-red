@@ -1,0 +1,68 @@
+{
+    "name": "@alpine-code/node-red-contrib-rabbitmq-bus",
+    "version": "0.1.0",
+    "description": "RabbitMQ Bus for Node-RED ",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest --testPathIgnorePatterns integration --forceExit --detectOpenHandles",
+        "test:integration": "jest --forceExit --detectOpenHandles"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/alpine-code/node-red-contrib-rabbitmq-bus.git"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "author": "ilzenzo",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/alpine-code/node-red-contrib-rabbitmq-bus/issues"
+    },
+    "homepage": "https://github.com/alpine-code/node-red-contrib-rabbitmq-bus#readme",
+    "keywords": [
+        "node-red",
+        "rabbitmq"
+    ],
+    "dependencies": {
+        "amqplib": "^0.5.6",
+        "debug": "^4.1.1",
+        "node-uuid": "^1.4.8"
+    },
+    "devDependencies": {
+        "eslint": "^6.1.0",
+        "husky": "^4.0.10",
+        "jest": "^24.9.0",
+        "lint-staged": "^9.4.2",
+        "node-red": "^1.0.2",
+        "node-red-node-test-helper": "^0.2.3"
+    },
+    "node-red": {
+        "nodes": {
+            "rabbitmq-bus-config": "src/nodes/config.js",
+            "rabbitmq-bus-emit": "src/nodes/emit.js",
+            "rabbitmq-bus-on": "src/nodes/on.js",
+            "rabbitmq-bus-on-ack": "src/nodes/on-ack.js"
+        }
+    },
+    "jest": {
+        "testEnvironment": "node"
+    },
+    "prettier": {
+        "trailingComma": "es5",
+        "tabWidth": 4,
+        "semi": true,
+        "singleQuote": true
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged && npm test"
+        }
+    },
+    "lint-staged": {
+        "src/**/*.js": [
+            "prettier --write",
+            "git add"
+        ]
+    }
+}

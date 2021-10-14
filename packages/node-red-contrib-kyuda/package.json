@@ -1,0 +1,72 @@
+{
+    "name": "@alpine-code/node-red-contrib-kyuda",
+    "version": "0.0.2",
+    "description": "Kyuda.io for Node-RED ",
+    "main": "index.js",
+    "scripts": {
+        "test": "jest --testPathIgnorePatterns integration --forceExit --detectOpenHandles",
+        "test:integration": "jest --forceExit --detectOpenHandles"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/alpine-code/node-red-contrib-kyuda.git"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "author": "ilzenzo",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/alpine-code/node-red-contrib-kyuda/issues"
+    },
+    "homepage": "https://github.com/alpine-code/node-red-contrib-kyuda#readme",
+    "keywords": [
+        "node-red",
+        "the-lab"
+    ],
+    "dependencies": {
+        "apollo-cache-inmemory": "^1.6.6",
+        "apollo-client": "^2.6.10",
+        "apollo-link-http": "^1.5.17",
+        "apollo-link-ws": "^1.0.20",
+        "graphql": "^15.3.0",
+        "graphql-tag": "^2.10.4",
+        "node-fetch": "^2.6.0",
+        "subscriptions-transport-ws": "^0.9.17",
+        "uuid": "^3.3.2"
+    },
+    "devDependencies": {
+        "eslint": "^6.1.0",
+        "husky": "^4.0.10",
+        "jest": "^24.9.0",
+        "lint-staged": "^9.4.2",
+        "node-red": "^1.0.2",
+        "node-red-node-test-helper": "^0.2.3"
+    },
+    "node-red": {
+        "nodes": {
+            "thelab-config": "src/nodes/config.js",
+            "thelab-action": "src/nodes/action.js"
+        }
+    },
+    "jest": {
+        "testEnvironment": "node"
+    },
+    "prettier": {
+        "trailingComma": "es5",
+        "tabWidth": 4,
+        "semi": true,
+        "singleQuote": true
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged && npm test"
+        }
+    },
+    "lint-staged": {
+        "src/**/*.js": [
+            "prettier --write",
+            "git add"
+        ]
+    }
+}

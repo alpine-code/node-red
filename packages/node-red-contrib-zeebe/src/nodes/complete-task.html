@@ -1,0 +1,49 @@
+<script type="text/javascript">
+    RED.nodes.registerType('complete-task', {
+        category: 'zeebe',
+        color: '#C0DEED',
+        defaults: {
+            name: { value: '' },
+        },
+        inputs: 1,
+        outputs: 0,
+        icon: 'zeebe.png',
+        label: function () {
+            return this.name || 'complete task';
+        },
+        paletteLabel: 'complete task',
+    });
+</script>
+
+<script type="text/x-red" data-template-name="complete-task">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="complete-task">
+    <p>When a Node-RED message is received at the input, this node completes a specific Zeebe task/job (with either success or failure).</p>
+
+    <h3>Inputs</h3>
+
+    <dl class="message-properties">
+        <dt>payload.complete <span class="property-type">function</span></dt>
+        <dd>A function from a <code>task-worker</code> which completes the corresponding task.</dd>
+
+        <dt>payload.variables <span class="property-type">object</span></dt>
+        <dd>Message variables as JSON object</dd>
+
+        <dt>payload.type <span class="property-type">string</span></dt>
+        <dd>Complete type. Can be either "success" or "failure". Defaults to "success"</dd>
+
+        <dt>payload.failureMessage <span class="property-type">string</span></dt>
+        <dd>Failure message, that will be returned to zeebe in case the complete type is "failure"</dd>
+    </dl>
+
+    <h3>References</h3>
+    <ul>
+        <li>Camunda Cloud Docs: <a href="https://docs.camunda.io/docs/product-manuals/concepts/job-workers/">Job Workers</a></li>
+        <li>zeebe-node docs: <a href="https://www.npmjs.com/package/zeebe-node#job-workers">createWorker</a></li>
+    </ul>
+</script>

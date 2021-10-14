@@ -1,0 +1,42 @@
+<script type="text/javascript">
+    RED.nodes.registerType('salesforce-stream', {
+      category: 'salesforce',
+      color: "#fff",
+      defaults: {
+        salesforce: { type: 'salesforce-config', required: true },
+        topic: { value: '' },
+        name: { value: '' }
+      },
+      inputs: 0,
+      outputs: 1,
+      icon: 'salesforce.png',
+      label: function () {
+        var forceNode = RED.nodes.node(this.force);
+        return this.name || 'Salesforce Stream';
+      },
+      labelStyle: function () {
+        return this.name ? 'node_label_italic' : '';
+      },
+      paletteLabel: 'stream'
+    });
+  </script>
+
+  <script type="text/x-red" data-template-name="salesforce-stream">  
+    <div class="form-row">
+      <label for="node-input-salesforce"><i class="fa fa-user"></i> User</label>
+      <input type="text" id="node-input-salesforce">
+    </div>
+    <div class="form-row">
+      <label for="node-input-topic"><i class="fa fa-table"></i> Topic</label>
+      <input type="text" id="node-input-topic" placeholder="Topic">
+    </div>
+  
+    <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+  </script>
+  
+  <script type="text/x-red" data-help-name="salesforce-stream" data-lang="en-US">
+    
+  </script>

@@ -1,0 +1,103 @@
+<script type="text/javascript">
+    function validate(value) {
+        return value === '' || RED.validators.number()(value);
+    }
+    RED.nodes.registerType('camunda-task-worker', {
+        category: 'camunda',
+        color: '#FFF',
+        defaults: {
+            name: { value: '' },
+            camunda: { required: true, type: 'camunda-config' },
+            topic: { required: true },
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: 'camunda.png',
+        label: function() {
+            return this.name || 'worker';
+        },
+        paletteLabel: 'worker',
+    });
+</script>
+
+<script type="text/x-red" data-template-name="camunda-task-worker">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-camunda"><i class="fa fa-server"></i> Camunda</label>
+        <input type="text" id="node-input-camunda" placeholder="Camunda" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-topic"><i class="fa fa-envelope"></i> Topic</label>
+        <input type="text" id="node-input-topic" placeholder="Topic">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="camunda-task-worker">
+    <p>Creates a task worker and subscribes to specific topic. This node outputs a Node-RED message for each newly received task.</p>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+            <dl class="message-properties">
+                <dt>payload <span class="property-type">object</span></dt>
+                <dd>the standard output of the command.</dd>
+
+                <dt>payload.task <span class="property-type">object</span></dt>
+                <dd>Information about the task.</dd>
+
+                <dt>payload.task.variables <span class="property-type">object</span></dt>
+                <dd>
+                    <span>Read-only process variables provided to the worker. To provide variables back to the process use <code>payload.processVariables</code> or <code>payload.localVariables</code>.</span>
+                    <span>Here are some usage examples to use in a function node:</span>
+                    <br />
+<pre>
+payload.task.variables.getAll();
+payload.task.variables.get("integer");
+payload.task.variables.set("double");
+payload.task.variables.set("boolean");
+payload.task.variables.set("json");
+payload.task.variables.set("date";
+</pre>
+                </dd>
+
+                <dt>payload.taskService <span class="property-type">function</span></dt>
+                <dd>A service to manage the task. Used to complete the using the <code>complete</code> node.</dd>
+           
+                <dt>payload.processVariables <span class="property-type">object</span></dt>
+                <dd>
+                    <span>Used to return processVariables on completition.</span>
+                    <br />
+                    <span>Here are some usage examples to use in a function node:</span>
+                    <br />
+<pre>
+payload.localVariables.set("string", "string");
+payload.localVariables.set("integer", 10);
+payload.localVariables.set("double", 1.1);
+payload.localVariables.set("boolean", true);
+payload.localVariables.set("json", {});
+payload.localVariables.set("date", new Date());
+</pre>
+                </dd>
+
+                <dt>payload.localVariables <span class="property-type">object</span></dt>
+                <dd>
+                    <span>Used to return localVariables on completition.</span>
+                    <br />
+                    <span>Here are some usage examples to use in a function node:</span>
+                    <br />
+<pre>
+payload.localVariables.set("string", "string");
+payload.localVariables.set("integer", 10);
+payload.localVariables.set("double", 1.1);
+payload.localVariables.set("boolean", true);
+payload.localVariables.set("json", {});
+payload.localVariables.set("date", new Date());
+</pre>
+                </dd>
+            </dl>
+        </li>
+    </ol>
+</script>

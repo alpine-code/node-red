@@ -1,0 +1,27 @@
+<script type="text/javascript">
+  RED.nodes.registerType('logtail-config', {
+    category: 'config',
+    defaults: {
+      name: { value: 'Logtail'},
+      sourceToken: { value: '', required: true },
+    },
+    label: function () {
+      return this.name;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="logtail-config">
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="icon-bookmark"></i> Name</label>
+    <input type="text" id="node-config-input-name">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-sourceToken"><i class="icon-bookmark"></i> Source Token</label>
+    <input type="text" id="node-config-input-sourceToken">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="logtail-config" data-lang="en-US">
+
+</script>

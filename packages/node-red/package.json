@@ -1,0 +1,45 @@
+{
+  "name": "@alpine-code/node-red",
+  "version": "1.1.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon -r esm --ignore './data/' ./server.js",
+    "start-prod": "node -r esm server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@alpine-code/node-red-contrib-camunda": "2.2.1",
+    "@alpine-code/node-red-contrib-google": "0.0.3",
+    "@alpine-code/node-red-contrib-graphql": "0.1.0",
+    "@alpine-code/node-red-contrib-minio": "0.0.6",
+    "@alpine-code/node-red-contrib-papertrail": "0.3.2",
+    "@alpine-code/node-red-contrib-rabbitmq-bus": "0.1.0",
+    "@alpine-code/node-red-contrib-salesforce": "1.0.0",
+    "@alpine-code/node-red-contrib-zeebe": "0.7.0",
+    "@alpine-code/node-red-contrib-aws-ses": "0.0.1",
+    "@alpine-code/node-red-contrib-logtail": "1.0.1",
+    "@alpine-code/node-red-contrib-kafka": "1.0.1",
+    "dotenv": "^8.2.0",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "graphql": "^15.6.0",
+    "graphql-request": "^3.2.0",
+    "lodash": "^4.17.19",
+    "minio": "^7.0.16",
+    "mongodb": "^3.6.0",
+    "node-red": "^2.0.6",
+    "node-red-dashboard": "^3.0.4",
+    "node-red-node-swagger": "^0.1.9",
+    "passport": "^0.4.1",
+    "passport-auth0": "^1.4.0",
+    "pug": "^3.0.0",
+    "redis": "^3.0.2",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}

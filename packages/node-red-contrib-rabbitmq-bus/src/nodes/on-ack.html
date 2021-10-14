@@ -1,0 +1,32 @@
+<script type="text/javascript">
+
+    RED.nodes.registerType('rabbitmq-bus-on-ack', {
+        category: 'rabbitmq',
+        color: '#fff',
+        defaults: {},
+        inputs: 1,
+        outputs: 0,
+        //outputLabels: ["Output", "Error"],
+        icon: "rabbitmq.png",
+        label: function () {
+            return this.onAckName || "On Ack";
+        },
+        paletteLabel: 'on ack'
+    });
+
+</script>
+
+
+
+<!-- ====  NODE EDIT FORM  ==================================================================================== -->
+
+<script type="text/html" data-template-name="rabbitmq-bus-on-ack">
+
+</script>
+
+
+<!-- ====  NODE HELP INFORMATION  ==================================================================================== -->
+
+<script type="text/html" data-help-name="rabbitmq-bus-on-ack">
+
+</script>

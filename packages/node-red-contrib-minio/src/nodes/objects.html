@@ -1,0 +1,544 @@
+<script type="text/javascript">
+
+    RED.nodes.registerType('minio-objects', {
+        category: 'minio',
+        color: '#fff',
+        defaults: {
+            objects_name: { value: "" },
+            host: { value: "", type: "minio-config", required: true },
+            objects_operation: { value: "" },
+            objects_bucket: { value: "" },
+            objects_object: { value: "" },
+            objects_offset: { value: "" },
+            objects_length: { value: "" },
+            objects_stream: { value: "" },
+            objects_size: { value: "" },
+            objects_metadata: { value: "" },
+            objects_sourceobject: { value: "" },
+            objects_conditions: { value: "" },
+            objects_objectslist: { value: [] },
+            objects_prefix: { value: "" },
+            objects_etag: { value: "" },
+            objects_datetime: { value: "" }
+        },
+        inputs: 1,
+        outputs: 2,
+        outputLabels: ["Output", "Error"],
+        icon: "minio.png",
+        label: function () {
+            return this.objects_name || "Object Operations";
+        },
+        paletteLabel: 'objects'
+    });
+
+    // ====  FUNCTION TO TOGGLE FORM ELEMENT DISPLAY  ===============================================
+    function toggleVisibilityObjects(elementArray) {
+        let element;
+        for (element of elementArray) {
+            let x = document.getElementById(element[0]);
+            if (element[1]) {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    }
+
+    // ====  FUNCTION TO DECIDE WHICH FORM ELEMENTS TO DISPLAY  =====================================
+    function inputVisibilityObjects(elementId) {
+        let selection = document.getElementById(elementId).value;
+        if (selection) {
+            let bitwise = 0;
+
+            switch (selection) {
+                case "getObject":
+                    bitwise = 3;
+                    break;
+                case "getPartialObject":
+                    bitwise = 15;
+                    break;
+                case "putObject":
+                    bitwise = 115;
+                    break;
+                case "copyObject":
+                    bitwise = 387;
+                    break;
+                case "statObject":
+                    bitwise = 3;
+                    break;
+                case "removeObject":
+                    bitwise = 3;
+                    break;
+                case "removeObjects":
+                    bitwise = 1537;
+                    break;
+                case "removeIncompleteUpload":
+                    bitwise = 3;
+                    break;
+                case "setMatchETag":
+                    bitwise = 2435;
+                    break;
+                case "setMatchETagExcept":
+                    bitwise = 2435;
+                    break;
+                case "setModified":
+                    bitwise = 4483;
+                    break;
+                case "setReplaceMetadataDirective":
+                    bitwise = 451;
+                    break;
+                case "setUnmodified":
+                    bitwise = 4483;
+                    break;
+                case "copyDefault":
+                    bitwise = 387;
+                    break;
+                case "default":
+                    bitwise = 0;
+            }
+
+            let elementArray = [];
+
+            let elementIds = [
+                [1, "objects_bucketName"],
+                [2, "objects_objectName"],
+                [4, "objects_offset"],
+                [8, "objects_length"],
+                [16, "objects_stream"],
+                [32, "objects_size"],
+                [64, "objects_metaData"],
+                [128, "objects_sourceObject"],
+                [256, "objects_conditions"],
+                [512, "objects_objectsList"],
+                [1024, "objects_prefix"],
+                [2048, "objects_etag"],
+                [4096, "objects_dateTime"]
+            ]
+
+            for (elementId of elementIds) {
+                let isVisible = false;
+
+                if (bitwise & elementId[0]) {
+                    isVisible = true;
+                }
+                elementArray.push([elementId[1], isVisible]);
+            }
+            toggleVisibilityObjects(elementArray);
+        }
+    }
+
+</script>
+
+
+
+<!-- ====  NODE EDIT FORM  ==================================================================================== -->
+
+<script type="text/html" data-template-name="minio-objects">
+    <div class="form-row">
+        <label for="node-input-objects_name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-objects_name" placeholder="MinIO File Operations">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-server"></i> MinIO Host</label>
+        <input type="text" id="node-input-host" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-objects_operation"><i class="fa fa-wrench"></i> Operation</label>
+        <select type="text" id="node-input-objects_operation" onchange="inputVisibilityObjects(id)">
+            <option value="default">--Select File Object Operation--</option>
+            <option value="getObject">getObject</option>
+            <option value="getPartialObject">getPartialObject</option>
+            <option value="putObject">putObject</option>
+            <option value="copyObject">copyObject</option>
+            <option value="statObject">statObject</option>
+            <option value="removeObject">removeObject</option>
+            <option value="removeObjects">removeObjects</option>
+            <option value="removeIncompleteUpload">removeIncompleteUpload</option>
+        ;
+        </select>        
+    </div>
+    <div class="form-row" id="objects_bucketName" style="display: none">
+        <label for="node-input-objects_bucket"><i class="fa fa-database"></i> Bucket</label>
+        <input type="text" id="node-input-objects_bucket" placeholder="Bucket Name">
+    </div>
+    <div class="form-row" id="objects_objectName" style="display: none">
+        <label for="node-input-objects_object"><i class="fa fa-file"></i> Object</label>
+        <input type="text" id="node-input-objects_object" placeholder="Object Name">
+    </div>
+    <div class="form-row" id="objects_offset" style="display: none">
+        <label for="node-input-objects_offset"><i class="fa fa-wrench"></i> Offset</label>
+        <input type="text" id="node-input-objects_offset" placeholder="Offset from where the stream will start.">
+    </div>
+    <div class="form-row" id="objects_length" style="display: none">
+        <label for="node-input-objects_length"><i class="fa fa-arrows-h"></i> Length</label>
+        <input type="text" id="node-input-objects_length" placeholder="Length">
+    </div>
+    <div class="form-row" id="objects_stream" style="display: none">
+        <label for="node-input-objects_stream"><i class="fa fa-wrench"></i> Stream</label>
+        <input type="text" id="node-input-objects_stream" placeholder="Stream">
+    </div>
+    <div class="form-row" id="objects_size" style="display: none">
+        <label for="node-input-objects_size"><i class="fa fa-expand"></i> Size</label>
+        <input type="text" id="node-input-objects_size" placeholder="Size">
+    </div>
+    <div class="form-row" id="objects_sourceObject" style="display: none">
+        <label for="node-input-objects_sourceobject"><i class="fa fa-clone"></i> Source Obj.</label>
+        <input type="text" id="node-input-objects_sourceobject" placeholder="Source Object">
+    </div>
+    <div class="form-row" id="objects_conditions" style="display: none">
+        <label for="node-input-objects_conditions"><i class="fa fa-book"></i> Conditions</label>
+        <select type="text" id="node-input-objects_conditions" onchange="inputVisibilityObjects(id)">
+            <option value="copyDefault">--Select Object Condition--</option>
+            <option value="setMatchETag">setMatchETag</option>
+            <option value="setMatchETagExcept">setMatchETagExcept</option>
+            <option value="setModified">setModified</option>
+            <option value="setReplaceMetadataDirective">setReplaceMetadataDirective</option>
+            <option value="setUnmodified">setUnmodified</option>
+        ;
+        </select>        
+    </div>
+    <div class="form-row" id="objects_metaData" style="display: none">
+        <label for="node-input-objects_metadata"><i class="fa fa-info"></i> MetaData</label>
+        <input type="text" id="node-input-objects_metadata" placeholder="Meta Data">
+    </div>
+    <div class="form-row" id="objects_objectsList" style="display: none">
+        <label for="node-input-objects_objectslist"><i class="fa fa-list"></i> Objects List</label>
+        <input type="text" id="node-input-objects_objectslist" placeholder='e.g. [ "object_01", "object_02", ... ] (optional)'>
+    </div>
+    <div class="form-row" id="objects_prefix" style="display: none">
+        <label for="node-input-objects_prefix"><i class="fa fa-step-backward"></i> Prefix</label>
+        <input type="text" id="node-input-objects_prefix" placeholder="Prefix of object names for removal (optional)">
+    </div>
+    <div class="form-row" id="objects_etag" style="display: none">
+        <label for="node-input-objects_etag"><i class="fa fa-tag"></i> etag</label>
+        <input type="text" id="node-input-objects_etag" placeholder="Object etag">
+    </div>
+    <div class="form-row" id="objects_dateTime" style="display: none">
+        <label for="node-input-objects_datetime"><i class="fa fa-calendar"></i> Date Time</label>
+        <input type="text" id="node-input-objects_datetime" placeholder="Zoned Date Time">
+    </div>
+</script>
+
+
+<!-- ====  NODE HELP INFORMATION  ==================================================================================== -->
+
+<script type="text/html" data-help-name="minio-objects">
+
+    <h1>MinIO Object Operations</h1>
+    <p>For each operation, paramenters can either be set in the Edit Node dialogue, 
+    or passed in to the node via the node input. Parameters passed in will override any parameters 
+    set in the Edit Node dialogue.</p>
+    <p>The object <b><i>Operation</i></b> can be passed in to the node by setting the appropriate incoming value of <code>msg.operation</code></p>
+    
+    <hr>
+
+    <h2>1. <i>getObject</i></h2>
+    
+    <h3>Description</h3>
+    <p>Downloads an object as a stream.</p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-file">&#x202F;</i></td><td valign="top"><b>Object</b></td><td><b><code>objectName</code></b> ( <code>msg.objectName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the object.</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <!-- TO BE COMPLETED -->
+            <td valign="top"><B>Output</B></td><td valign="top">TBC</td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+    
+    <hr>
+
+
+    <h2>2. <i>getPartialObject</i></h2>
+    
+    <h3>Description</h3>
+    <p>Downloads the specified range bytes of an object as a stream.</p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-file">&#x202F;</i></td><td valign="top"><b>Object</b></td><td><b><code>objectName</code></b> ( <code>msg.objectName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the object.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-wrench">&#x202F;</i></td><td valign="top"><b>Offset</b></td><td><b><code>offset</code></b> ( <code>msg.offset</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Offset of the object from where the stream will start.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-arrows-h">&#x202F;</i></td><td valign="top"><b>Length</b></td><td><b><code>length</code></b> ( <code>msg.length</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Length of the object that will be read in the stream (optional, if not specified we read the rest of the file from the offset).</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <!-- TO BE COMPLETED -->
+            <td valign="top"><B>Output</B></td><td valign="top">TBC</td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+
+    <hr>
+
+
+    <h2>3. <i>putObject</i></h2>
+    
+    <h3>Description</h3>
+    <p>
+        Uploads an object from a stream/Buffer.
+    </p>
+    <p> 
+        The maximum size of a single object is limited to 5TB. 
+        putObject transparently uploads objects larger than 64MiB in multiple parts. 
+        Uploaded data is carefully verified using MD5SUM signatures.
+    </p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-file">&#x202F;</i></td><td valign="top"><b>Object</b></td><td><b><code>objectName</code></b> ( <code>msg.objectName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the object.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-wrench">&#x202F;</i></td><td valign="top"><b>Stream</b></td><td><b><code>stream</code></b> ( <code>msg.stream</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Readable stream.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-arrows-h">&#x202F;</i></td><td valign="top"><b>Size</b></td><td><b><code>size</code></b> ( <code>msg.size</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Size of the object (optional).</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-info">&#x202F;</i></td><td valign="top"><b>Meta Data</b></td><td><b><code>metaData</code></b> ( <code>msg.metaData</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Meta data of the object (optional).</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">
+                The node will output confirmation, in the form of a JS object, 
+                as to whether or not the object PUT operation was successful, 
+                including (if appropriate) the etag reference of the object, , e.g. <code>{"bucketExists":true, "etag":etagstring}</code>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+    
+    <hr>
+
+    
+    <h2>4. <i>copyObject</i></h2>
+    
+    <h3>Description</h3>
+    <p>Copy a source object into a new object in the specified bucket.</p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-file">&#x202F;</i></td><td valign="top"><b>Object</b></td><td><b><code>objectName</code></b> ( <code>msg.objectName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the object.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-clone">&#x202F;</i></td><td valign="top"><b>sourceObject</b></td><td><b><code>stream</code></b> ( <code>msg.sourceObject</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Path of the file to be copied, in the format <code>bucketname/objectname</code></td></tr>
+
+        <tr><td valign="top"><i class="fa fa-book">&#x202F;</i></td><td valign="top"><b>Conditions</b></td><td><b><code>size</code></b> ( <code>msg.size</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Conditions to be satisfied before allowing object copy.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-tag">&#x202F;</i></td><td valign="top"><b>ETag</b></td><td><b><code>setMatchEtag</code></b> ( <code>msg.setMatchEtag</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Conditions to be satisfied before allowing object copy.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-tag">&#x202F;</i></td><td valign="top"><b>Except ETag</b></td><td><b><code>setMatchEtagExcept</code></b> ( <code>msg.setMatchEtagExcept</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Conditions to be satisfied before allowing object copy.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-calendar">&#x202F;</i></td><td valign="top"><b>Modified</b></td><td><b><code>setModified</code></b> ( <code>msg.setModified</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Conditions to be satisfied before allowing object copy.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-info">&#x202F;</i></td><td valign="top"><b>MetaData</b></td><td><b><code>setReplaceMetadataDirective</code></b> ( <code>msg.setReplaceMetadataDirective</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Conditions to be satisfied before allowing object copy.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-calendar">&#x202F;</i></td><td valign="top"><b>Unmodified</b></td><td><b><code>setUnmodified</code></b> ( <code>msg.setUnmodified</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Conditions to be satisfied before allowing object copy.</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">The node will output confirmation, in the form of a JS object, as to whether or not the object has been copied, e.g. <code>{"removeBucket":true}</code></td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+    
+    <hr>
+
+
+    <h2>5. <i>statObject</i></h2>
+    
+    <h3>Description</h3>
+    <p>Lists all objects in a bucket.</p>
+    
+    <h3>Parameters</h3>
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket for which the objects listing is required.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-step-backward">&#x202F;</i></td><td valign="top"><b>Prefix</b></td><td><b><code>prefix</code></b> ( <code>msg.prefix</code> )</td></tr>
+        <tr><td> </td><td colspan=2>The prefix of the objects that should be listed. (optional).</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-repeat">&#x202F;</i></td><td valign="top"><b>Recursive</b></td><td><b><code>recursive</code></b> ( <code>msg.recursive</code> )</i></td></tr>
+        <tr><td> </td><td colspan=2><code>true</code> indicates recursive style listing and <code>false</code> indicates directory style listing delimited by '/'. (optional, default <code>false</code>).</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">The node will output a JS object in the form <code>{"listObjects":[...]}</code> containing an array of JS objects in the form <code>{"name":"objectname", "lastModified": "yyyy-mm-ddThh:mm:ss.sssZ", "etag":"etagstring", "size":1234}</code> for each object returned.</td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+    
+    <hr>
+
+
+    <h2>6. <i>removeObject</i></h2>
+    
+    <h3>Description</h3>
+    <p>Lists all objects in a bucket using S3 listing objects V2 API.</p>
+    
+    <h3>Parameters</h3>
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket for which the objects listing is required.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-step-backward">&#x202F;</i></td><td valign="top"><b>Prefix</b></td><td><b><code>prefix</code></b> ( <code>msg.prefix</code> )</td></tr>
+        <tr><td> </td><td colspan=2>The prefix of the objects that should be listed. (optional).</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-repeat">&#x202F;</i></td><td valign="top"><b>Recursive</b></td><td><b><code>recursive</code></b> ( <code>msg.recursive</code> )</i></td></tr>
+        <tr><td> </td><td colspan=2><code>true</code> indicates recursive style listing and <code>false</code> indicates directory style listing delimited by '/'. (optional, default <code>false</code>).</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-arrow-down">&#x202F;</i></td><td valign="top"><b>Start After</b></td><td><b><code>startAfter</code></b> ( <code>msg.startAfter</code> )</i></td></tr>
+        <tr><td> </td><td colspan=2>Specifies the object name to start after, when listing objects in a bucket. (optional).</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">The node will output a JS object in the form <code>{"listObjectsV2":[...]}</code> containing an array of JS objects in the form <code>{"name":"objectname", "lastModified": "yyyy-mm-ddThh:mm:ss.sssZ", "etag":"etagstring", "size":1234}</code> for each object returned.</td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+    
+    <hr>
+
+
+    <h2>7. <i>removeObjects</i></h2>
+    
+    <h3>Description</h3>
+    <p>Removes all objects in a specified bucket matching an optional prefix value, or a defined list of object names.</p>
+    
+    <h3>Parameters</h3>
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-list">&#x202F;</i></td><td valign="top"><b>Objects List</b></td><td><b><code>objectsList</code></b> ( <code>msg.objectsList</code> )</i></td></tr>
+        <tr><td> </td><td colspan=2>Explicit list of objects in the bucket to be removed (Optional). Should be provided as an array of object names, e.g. <code>[ "object_01", "object_02", "object_03" ]</code>. If left blank, then all objects in the specified bucket will be removed (subject to any value specified in the prefix field).</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-step-backward">&#x202F;</i></td><td valign="top"><b>Prefix</b></td><td><b><code>prefix</code></b> ( <code>msg.prefix</code> )</td></tr>
+        <tr><td> </td><td colspan=2>The prefix of the objects that should be removed (Optional). If no prefix is provided, then all objects within the specified bucket will be removed, unless an explicit list of objects is provided in the Objects List field.</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">The node will output confirmation, in the form of a JS object, as to whether or not the list of objects have been removed, e.g. <code>{"removeObjects":true}</code></td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+    
+    <hr>
+
+
+    <h2>8. <i>removeIncompleteUpload</i></h2>
+    
+    <h3>Description</h3>
+    <p>Lists partially uploaded objects in a bucket.</p>
+    
+    <h3>Parameters</h3>
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-step-backward">&#x202F;</i></td><td valign="top"><b>Prefix</b></td><td><b><code>prefix</code></b> ( <code>msg.prefix</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Prefix of the object names that are partially uploaded. (optional).</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-repeat">&#x202F;</i></td><td valign="top"><b>Recursive</b></td><td><b><code>recursive</code></b> ( <code>msg.recursive</code> )</i></td></tr>
+        <tr><td> </td><td colspan=2><code>true</code> indicates recursive style listing and <code>false</code> indicates directory style listing delimited by '/'. (optional, default <code>false</code>).</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top"><B>Output</B></td><td valign="top">The node will output a JS object in the form <code>{"listIncompleteUploads":[...]}</code> containing an array of JS objects in the form <code>{"key":"objectname", "uploadId": "uploadidstring", "size":1234}</code> for each object returned.</td>
+        </tr>
+        <tr>
+            <td valign="top"><B>Error</B></td><td valign="top">Any errors received in response to the request will be passed to the node's 'Error' output.</td>
+        </tr>
+    </table>
+    
+    <hr>
+
+    
+
+</script>

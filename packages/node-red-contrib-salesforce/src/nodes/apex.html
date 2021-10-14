@@ -1,0 +1,53 @@
+<script type="text/javascript">
+    RED.nodes.registerType('salesforce-apex', {
+      category: 'salesforce',
+      color: "#fff",
+      defaults: {
+        salesforce: { type: 'salesforce-config', required: true },
+        operation: { value: 'post' },
+        path: { value: '' },
+        name: { value: '' }
+      },
+      inputs: 1,
+      outputs: 1,
+      icon: 'salesforce.png',
+      label: function () {
+        var forceNode = RED.nodes.node(this.force);
+        return this.name || 'Salesforce Apex';
+      },
+      labelStyle: function () {
+        return this.name ? 'node_label_italic' : '';
+      },
+      paletteLabel: 'apex'
+    });
+  </script>
+
+  <script type="text/x-red" data-template-name="salesforce-apex">  
+    <div class="form-row">
+      <label for="node-input-salesforce"><i class="fa fa-user"></i> User</label>
+      <input type="text" id="node-input-salesforce">
+    </div>
+    <div class="form-row">
+      <label for="node-input-operation"><i class="fa fa-wrench"></i> Operation</label>
+      <select type="text" id="node-input-operation">
+        <option value="get">GET</option>
+        <option value="post">POST</option>
+        <option value="put">PUT</option>
+        <option value="patch">PATCH</option>
+        <option value="delete">DELETE</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label for="node-input-path"><i class="fa fa-table"></i> Path</label>
+      <input type="text" id="node-input-path" placeholder="/users/me">
+    </div>
+  
+    <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+  </script>
+  
+  <script type="text/x-red" data-help-name="salesforce-apex" data-lang="en-US">
+    
+  </script>

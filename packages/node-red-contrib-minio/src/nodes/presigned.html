@@ -1,0 +1,420 @@
+<script type="text/javascript">
+
+    RED.nodes.registerType('minio-presigned', {
+        category: 'minio',
+        color: '#fff',
+        defaults: {
+            presigned_name: { value: "" },
+            host: { value: "", type: "minio-config", required: true },
+            presigned_operation: { value: "" },
+            presigned_bucket: { value: "" },
+            presigned_object: { value: "" },
+            presigned_expiry: { value: "" },
+            presigned_req_params: { value: "" },
+            presigned_resp_headers: { value: "" },
+            presigned_issue: { value: "" },
+            // presigned_policy: {value:""},
+            presigned_policy_bucket: { value: "" },
+            presigned_policy_key: { value: "" },
+            presigned_policy_key_prefix: { value: "" },
+            presigned_policy_expires: { value: "" },
+            presigned_policy_content_type: { value: "" },
+            presigned_policy_content_length_range_from: { value: "" },
+            presigned_policy_content_length_range_to: { value: "" }
+        },
+        inputs: 1,
+        outputs: 2,
+        outputLabels: ["Output", "Error"],
+        icon: "minio.png",
+        label: function () {
+            return this.presigned_name || "Presigned Operations";
+        },
+        paletteLabel: 'presigned'
+    });
+
+
+    // ====  FUNCTION TO TOGGLE FORM ELEMENT DISPLAY  ===============================================
+    function toggleVisibilityPresigned(elementArray) {
+        let element;
+        for (element of elementArray) {
+            let x = document.getElementById(element[0]);
+            if (element[1]) {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    }
+
+    // ====  FUNCTION TO DECIDE WHICH FORM ELEMENTS TO DISPLAY  =====================================
+    function inputVisibilityPresigned() {
+        let selection = document.getElementById("node-input-presigned_operation").value;
+        let bitwise = 0;
+
+        switch (selection) {
+            case "presignedURL":
+                bitwise = 47;
+                break;
+            case "presignedGetObject":
+                bitwise = 55;
+                break;
+            case "presignedPutObject":
+                bitwise = 7;
+                break;
+            case "presignedPostPolicy":
+                bitwise = 8128;
+                break;
+            case "default":
+                bitwise = 0;
+        }
+
+        let elementArray = [];
+
+        let elementIds = [
+            [1, "bucketName"],
+            [2, "objectName"],
+            [4, "expiry"],
+            [8, "reqParams"],
+            [16, "respHeaders"],
+            [32, "requestDate"],
+            [64, "policy.setBucket"],
+            [128, "policy.setKey"],
+            [256, "policy.setKeyStartsWith"],
+            [512, "policy.setExpires"],
+            [1024, "policy.setContentType"],
+            [2048, "policy.setContentLengthRange.from"],
+            [4096, "policy.setContentLengthRange.to"]
+        ]
+
+        for (elementId of elementIds) {
+            let isVisible = false;
+
+            if (bitwise & elementId[0]) {
+                isVisible = true;
+            }
+            elementArray.push([elementId[1], isVisible]);
+        }
+        toggleVisibilityPresigned(elementArray);
+    }
+
+</script>
+
+
+
+<!-- ====  NODE EDIT FORM  ==================================================================================== -->
+
+<script type="text/html" data-template-name="minio-presigned">
+    <div class="form-row">
+        <label for="node-input-presigned_name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-presigned_name" placeholder="MinIO Pre-Signed URL">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-server"></i> MinIO Host</label>
+        <input type="text" id="node-input-host" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-presigned_operation"><i class="fa fa-wrench"></i> Operation</label>
+        <select type="text" id="node-input-presigned_operation" onchange="inputVisibilityPresigned(id)">
+            <option value="default">--Select Presigned Operation--</option>
+            <option value="presignedURL">presignedURL</option>
+            <option value="presignedGetObject">presignedGetObject</option>
+            <option value="presignedPutObject">presignedPutObject</option>
+            <option value="presignedPostPolicy">presignedPostPolicy</option>
+        ;
+        </select>        
+    </div>
+    <div class="form-row" id="bucketName" style="display: none">
+        <label for="node-input-presigned_bucket"><i class="fa fa-database"></i> Bucket</label>
+        <input type="text" id="node-input-presigned_bucket" placeholder="Bucket Name">
+    </div>
+    <div class="form-row" id="objectName" style="display: none">
+        <label for="node-input-presigned_object"><i class="fa fa-file"></i> Object</label>
+        <input type="text" id="node-input-presigned_object" placeholder="Object Name">
+    </div>
+    <div class="form-row" id="expiry" style="display: none">
+        <label for="node-input-presigned_expiry"><i class="fa fa-clock-o"></i> Expiry</label>
+        <input type="text" id="node-input-presigned_expiry" placeholder="URL expiry time, in seconds (optional)">
+    </div>
+    <div class="form-row" id="reqParams" style="display: none">
+        <label for="node-input-presigned_req_params"><i class="fa fa-wrench"></i> Params</label>
+        <input type="text" id="node-input-presigned_req_params" placeholder="Required Parameters (optional)">
+    </div>
+    <div class="form-row" id="respHeaders" style="display: none">
+        <label for="node-input-presigned_resp_headers"><i class="fa fa-wrench"></i> Headers</label>
+        <input type="text" id="node-input-presigned_resp_headers" placeholder="Reponse Headers to Override (optional)">
+    </div>
+    <div class="form-row" id="requestDate" style="display: none">
+        <label for="node-input-presigned_issue"><i class="fa fa-calendar"></i> Issue Date</label>
+        <input type="text" id="node-input-presigned_issue" placeholder="Date when the URL will be issued (optional)">
+    </div>
+    <div class="form-row" id="policy.setBucket" style="display: none">
+        <label for="node-input-presigned_policy_bucket"><i class="fa fa-database"></i> Bucket</label>
+        <input type="text" id="node-input-presigned_policy_bucket" placeholder="Policy: Bucket">
+    </div>
+    <div class="form-row" id="policy.setKey" style="display: none">
+        <label for="node-input-presigned_policy_key"><i class="fa fa-file"></i> Key</label>
+        <input type="text" id="node-input-presigned_policy_key" placeholder="Policy: Key">
+    </div>
+    <div class="form-row" id="policy.setKeyStartsWith" style="display: none">
+        <label for="node-input-presigned_policy_key_prefix"><i class="fa fa-step-backward"></i> Key Prefix</label>
+        <input type="text" id="node-input-presigned_policy_key_prefix" placeholder="Policy: Key Prefix">
+    </div>
+    <div class="form-row" id="policy.setExpires" style="display: none">
+        <label for="node-input-presigned_policy_expires"><i class="fa fa-clock-o"></i> Expiry</label>
+        <input type="text" id="node-input-presigned_policy_expires" placeholder="Policy: Expiry">
+    </div>
+    <div class="form-row" id="policy.setContentType" style="display: none">
+        <label for="node-input-presigned_policy_content_type"><i class="fa fa-code"></i> Type</label>
+        <input type="text" id="node-input-presigned_policy_content_type" placeholder="Policy: Content Type">
+    </div>
+    <div class="form-row" id="policy.setContentLengthRange.from" style="display: none">
+        <label for="node-input-presigned_policy_content_length_range_from"><i class="fa fa-long-arrow-left"></i> Size: From</label>
+        <input type="text" id="node-input-presigned_policy_content_length_range_from" placeholder="Policy: Content Length Range - From (bytes)">
+    </div>
+    <div class="form-row" id="policy.setContentLengthRange.to" style="display: none">
+        <label for="node-input-presigned_policy_content_length_range_to"><i class="fa fa-long-arrow-right"></i> Size: To</label>
+        <input type="text" id="node-input-presigned_policy_content_length_range_to" placeholder="Policy: Content Length Range - To (bytes)">
+    </div>
+</script>
+
+
+<!-- ====  NODE HELP INFORMATION  ==================================================================================== -->
+
+<script type="text/html" data-help-name="minio-presigned">
+
+    <h1>MinIO Presigned Operations</h1>
+    <p>For each operation, paramenters can either be set in the Edit Node dialogue, 
+    or passed in to the node via the node input. Parameters passed in will override any parameters 
+    set in the Edit Node dialogue.</p>
+    <p>The bucket <b><i>Operation</i></b> can be passed in to the node by setting the appropriate incoming value of <code>msg.operation</code></p>
+    
+
+    <!-- ====  PRESIGNED URL  ==================================================== -->
+
+    <h2>1. <i>presignedURL</i></h2>
+    
+    <h3>Description</h3>
+    <p>
+        Generates a presigned URL for the provided HTTP method, 'httpMethod'. 
+        Browsers/Mobile clients may point to this URL to directly download objects 
+        even if the bucket is private. This presigned URL can have an associated 
+        expiration time in seconds after which the URL is no longer valid. 
+        The default value is 7 days.
+    </p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-file">&#x202F;</i></td><td valign="top"><b>Object</b></td><td><b><code>objectName</code></b> ( <code>msg.objectName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the object.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-clock-o">&#x202F;</i></td><td valign="top"><b>Expiry</b></td><td><b><code>expiry</code></b> ( <code>msg.expiry</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Expiry time in seconds. Default value is 7 days. (optional)</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-wrench">&#x202F;</i></td><td valign="top"><b>Params</b></td><td><b><code>reqParams</code></b> ( <code>msg.reqParams</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Request parameters. (optional)</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-calendar">&#x202F;</i></td><td valign="top"><b>Issue Date</b></td><td><b><code>requestDate</code></b> ( <code>msg.requestDate</code> )</td></tr>
+        <tr><td> </td><td colspan=2>A date object, the url will be issued at. Default value is now. (optional)</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top">
+                <B>Output</B>
+            </td>
+            <td valign="top">
+                If successful, the node will output a JS object, containing the generated 
+                presigned URL, e.g. <code>{ "presignedURL": presignedUrl }</code>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <B>Error</B>
+            </td>
+            <td valign="top">
+                Any errors received in response to the request will be passed to the node's 'Error' output.
+            </td>
+        </tr>
+    </table>
+    
+    <hr>
+
+    <!-- ====  PRESIGNED GET OBJECT  ==================================================== -->
+
+    <h2>2. <i>presignedGetObject</i></h2>
+    
+    <h3>Description</h3>
+    <p>
+        Generates a presigned URL for HTTP GET operations.
+        Browsers/Mobile clients may point to this URL to directly download objects 
+        even if the bucket is private. This presigned URL can have an associated 
+        expiration time in seconds after which the URL is no longer valid. 
+        The default value is 7 days.
+    </p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-file">&#x202F;</i></td><td valign="top"><b>Object</b></td><td><b><code>objectName</code></b> ( <code>msg.objectName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the object.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-clock-o">&#x202F;</i></td><td valign="top"><b>Expiry</b></td><td><b><code>expiry</code></b> ( <code>msg.expiry</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Expiry time in seconds. Default value is 7 days. (optional)</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-wrench">&#x202F;</i></td><td valign="top"><b>Headers</b></td><td><b><code>respHeaders</code></b> ( <code>msg.respHeaders</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Response headers to override (optional)</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-calendar">&#x202F;</i></td><td valign="top"><b>Issue Date</b></td><td><b><code>requestDate</code></b> ( <code>msg.requestDate</code> )</td></tr>
+        <tr><td> </td><td colspan=2>A date object, the url will be issued at. Default value is now. (optional)</td></tr>
+
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top">
+                <B>Output</B>
+            </td>
+            <td valign="top">
+                If successful, the node will output a JS object, containing the generated 
+                presigned GET object URL, e.g. <code>{ "presignedURL": presignedUrl }</code>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <B>Error</B>
+            </td>
+            <td valign="top">
+                Any errors received in response to the request will be passed to the node's 'Error' output.
+            </td>
+        </tr>
+    </table>
+    <hr>
+
+
+    <!-- ====  PRESIGNED PUT OBJECT  ==================================================== -->
+
+    <h2>3. <i>presignedPutObject</i></h2>
+    
+    <h3>Description</h3>
+    <p>
+        Generates a presigned URL for HTTP PUT operations. 
+        Browsers/Mobile clients may point to this URL to upload objects 
+        directly to a bucket even if it is private. This presigned URL 
+        can have an associated expiration time in seconds after which the 
+        URL is no longer valid. The default value is 7 days.</p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>bucketName</code></b> ( <code>msg.bucketName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the bucket.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-file">&#x202F;</i></td><td valign="top"><b>Object</b></td><td><b><code>objectName</code></b> ( <code>msg.objectName</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Name of the object.</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-clock-o">&#x202F;</i></td><td valign="top"><b>Expiry</b></td><td><b><code>expiry</code></b> ( <code>msg.expiry</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Expiry time in seconds. Default value is 7 days. (optional)</td></tr>
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top">
+                <B>Output</B>
+            </td>
+            <td valign="top">
+                If successful, the node will output a JS object, containing the generated 
+                presigned PUT object URL, e.g. <code>{ "presignedURL": presignedUrl }</code>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <B>Error</B>
+            </td>
+            <td valign="top">
+                Any errors received in response to the request will be passed to the node's 'Error' output.
+            </td>
+        </tr>
+    </table>    
+    <hr>
+
+
+    <!-- ====  PRESIGNED POST POLICY  ==================================================== -->
+
+    <h2>4. <i>presignedPostPolicy</i></h2>
+    
+    <h3>Description</h3>
+    <p>
+        Allows setting policy conditions to a presigned URL for POST operations. 
+        Policies such as bucket name to receive object uploads, key name prefixes, 
+        expiry policy may be set.
+    </p>
+    
+    <h3>Parameters</h3>
+    
+    <table>
+        <tr><th colspan=2 style="text-align:left">Name</th><th  style="text-align:left">Parameter</th></tr>
+
+        <tr><td valign="top"><i class="fa fa-database">&#x202F;</i></td><td valign="top"><b>Bucket</b></td><td><b><code>policy.setBucket</code></b> ( <code>msg.policy.setBucket</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Policy restricting bucket for upload (optional).</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-file">&#x202F;</i></td><td valign="top"><b>Key</b></td><td><b><code>policy.setKey</code></b> ( <code>msg.policy.setKey</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Policy restricting object Key for upload (optional).</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-step-backward">&#x202F;</i></td><td valign="top"><b>Key Prefix</b></td><td><b><code>policy.setKeyStartsWith</code></b> ( <code>msg.policy.setKeyStartsWith</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Policy restricting object Key prefix for upload (optional).</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-clock-o">&#x202F;</i></td><td valign="top"><b>Expiry</b></td><td><b><code>policy.setExpires</code></b> ( <code>msg.policy.setExpires</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Expiry time of the policy, in seconds (optional).</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-code">&#x202F;</i></td><td valign="top"><b>Type</b></td><td><b><code>policy.setContentType</code></b> ( <code>msg.policy.setContentType</code> )</td></tr>
+        <tr><td> </td><td colspan=2>Policy restricting content type for upload, e.g. <code>text/plain</code> (optional).</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-long-arrow-left">&#x202F;</i></td><td valign="top"><b>Size: From</b></td><td><b><code>policy.setContentLengthRange</code></b> ( <code>msg.policy.setContentLengthRange.from</code> )</td></tr>
+        <tr><td> </td><td colspan=2>The lower end of the range of content length for the upload, in bytes, e.g. <code>1024</code> (optional).</td></tr>
+
+        <tr><td valign="top"><i class="fa fa-long-arrow-right">&#x202F;</i></td><td valign="top"><b>Size: To</b></td><td><b><code>policy.setContentLengthRange</code></b> ( <code>msg.policy.setContentLengthRange.to</code> )</td></tr>
+        <tr><td> </td><td colspan=2>The upper end of the range of content length for the upload, in bytes, e.g. <code>1024*1024</code> (optional).</td></tr>
+    </table>
+    
+    <h3>Node Outputs</h3>
+    <table>
+        <tr>
+            <td valign="top">
+                <B>Output</B>
+            </td>
+            <td valign="top">
+                If successful, the node will output a JS object, containing the  details of the 
+                submitted policy, e.g. <code>{ "presignedPostPolicy": { "postURL": url, "formData": {...} } }</code>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <B>Error</B>
+            </td>
+            <td valign="top">
+                Any errors received in response to the request will be passed to the node's 'Error' output.
+            </td>
+        </tr>
+    </table>
+    <hr>
+
+    
+
+</script>
