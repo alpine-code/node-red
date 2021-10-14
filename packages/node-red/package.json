@@ -41,5 +41,9 @@
   },
   "devDependencies": {
     "nodemon": "^1.18.10"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "ce5337230f631bff7ab5491728feaf4ee41e0bfc"
 }
