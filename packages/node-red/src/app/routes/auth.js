@@ -8,7 +8,7 @@ var querystring = require('querystring');
 // Perform the login, after login Auth0 will redirect to callback
 router.get('/login', passport.authenticate('auth0', {
     scope: 'openid email profile',
-    audience: 'https://the-lab.io/jwt/claims'
+    audience: 'https://node-red.alpine-code.com/jwt/claims'
 }), function (req, res) {
     res.redirect('/');
 });
@@ -16,6 +16,7 @@ router.get('/login', passport.authenticate('auth0', {
 // Perform the final stage of authentication and redirect to previously requested URL or '/user'
 router.get('/callback', function (req, res, next) {
     passport.authenticate('auth0', function (err, user, info) {
+        console.log(err)
         if (err) { return next(err); }
         if (!user) { return res.redirect('/auth/login'); }
         req.logIn(user, function (err) {

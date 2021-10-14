@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var express = require('express');
 var router = express.Router();
 
@@ -9,6 +10,30 @@ var settings = {
     flowFile: 'flows.json',
     userDir: "./data",
     credentialSecret: 'secret',
+    adminAuth: {
+        type: "strategy",
+        strategy: {
+            name: "auth0",
+            label: 'Sign in with Auth0',
+            icon: "fa-user",
+            strategy: require("passport-auth0").Strategy,
+            options: {
+                domain: process.env.AUTH0_DOMAIN,
+                clientID: process.env.AUTH0_CLIENT_ID,
+                clientSecret: process.env.AUTH0_CLIENT_SECRET,
+                callbackURL: process.env.AUTH0_CALLBACK_URL,
+                scope: 'openid email profile',
+                verify: function (accessToken, refreshToken, extraParams, profile, done) {
+                    done(null, {
+                        username: _.get(_.first(profile.emails), 'value', profile.id)
+                    });
+                }
+            },
+        },
+        users: function (user) {
+            return Promise.resolve({ username: user, permissions: "*" });
+        }
+    },
     functionGlobalContext: {},
     contextStorage: {
         default: {
@@ -70,7 +95,7 @@ var settings = {
         header: {
             title: " ",
             image: __dirname + "/assets/logo.svg",
-            url: "https://www.the-lab.io"
+            url: "hhttps://www.alpine-code.com/products/node-red"
         },
         deployButton: {
             type: "simple",
@@ -82,16 +107,16 @@ var settings = {
             "menu-item-export-library": process.env.NODE_RED_IMPORT_EXPORT === 'yes',
             "menu-item-keyboard-shortcuts": false,
             "menu-item-help": {
-                label: "The Lab",
-                url: "https://www.the-lab.io"
+                label: "Alpine Code",
+                url: "https://www.alpine-code.com/products/node-red"
             }
         },
-        userMenu: false,
+        userMenu: true,
         login: {
             image: __dirname + "/assets/logo.svg",
         },
         logout: {
-            redirect: "https://www.the-lab.io"
+            redirect: "http://localhost:1880"
         },
         palette: {
             allowInstall: process.env.NODE_RED_EDITOR_PALETTE === 'yes',

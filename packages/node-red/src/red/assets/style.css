@@ -21,23 +21,32 @@ html {
   background: #f3f3f3;
   color: #303133;
 }
+
 #red-ui-header .red-ui-header-toolbar li {
   margin-left: 4px;
 }
+
 #red-ui-header .button {
   border: 0;
 }
+
 #red-ui-header ul.red-ui-menu-dropdown {
   background: white;
   border: 1px solid #323232;
 }
-#red-ui-header ul.red-ui-menu-dropdown > li > a:hover,
-#red-ui-header ul.red-ui-menu-dropdown > li > a:focus,
-#red-ui-header ul.red-ui-menu-dropdown > li:hover > a,
-#red-ui-header ul.red-ui-menu-dropdown > li:focus > a {
+
+#red-ui-header ul.red-ui-menu-dropdown>li>a:hover,
+#red-ui-header ul.red-ui-menu-dropdown>li>a:focus,
+#red-ui-header ul.red-ui-menu-dropdown>li:hover>a,
+#red-ui-header ul.red-ui-menu-dropdown>li:focus>a {
   background: #f4f4f5 !important;
 }
+
 #red-ui-header ul.red-ui-menu-dropdown li a {
+  color: #1f2f3d;
+}
+
+#red-ui-header #usermenu-item-username>.red-ui-menu-label {
   color: #1f2f3d;
 }
 
@@ -51,9 +60,11 @@ html {
 #red-ui-header .button-group {
   margin: 0;
 }
+
 #red-ui-header .button-group>a {
   line-height: 20px;
 }
+
 #red-ui-header .red-ui-deploy-button {
   color: #fff;
   background-color: #ff7c00;
@@ -62,15 +73,17 @@ html {
   border-radius: 0px;
   text-transform: uppercase;
 }
+
 #red-ui-header .red-ui-deploy-button:hover {
   background: #d96900;
   border-color: #d96900;
   color: #fff;
 }
+
 #red-ui-header #red-ui-header-button-deploy.disabled {
   color: #fff;
-  background-color:rgba(255,124,0,.4);
-  border-color:rgba(255,124,0,.4);
+  background-color: rgba(255, 124, 0, .4);
+  border-color: rgba(255, 124, 0, .4);
 }
 
 /* Node Palette */
@@ -78,17 +91,20 @@ html {
   border-radius: 0px;
   border: 1px solid #999;
 }
+
 .red-ui-palette-port {
   border-radius: 0px;
 }
+
 .red-ui-palette-icon-container {
-  background-color: rgba(0,0,0,0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 /* Node UI */
 .red-ui-flow-node rect {
   rx: 0
 }
+
 .red-ui-flow-node-icon-shade {
   fill-opacity: .1;
 }
@@ -124,11 +140,13 @@ html {
   border-radius: 0px;
   text-transform: uppercase;
 }
+
 .lab-button--primary {
   color: #fff;
   background-color: #C7C7C7;
   border-color: #aaa;
 }
+
 .lab-button--primary:hover {
   background: #d96900;
   border-color: #d96900;
