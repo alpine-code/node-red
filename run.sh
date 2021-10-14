@@ -1,0 +1,1 @@
+docker run -p 1880:1880 --env-file .env alpcode/node-red
