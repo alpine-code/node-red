@@ -8,7 +8,7 @@ var settings = {
     httpAdminRoot: "/builder/",
     httpNodeRoot: "/api/",
     flowFile: 'flows.json',
-    userDir: "./data",
+    userDir: "./user",
     credentialSecret: 'secret',
     adminAuth: {
         type: "strategy",
