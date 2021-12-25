@@ -11,7 +11,7 @@ It also interact with the Camunda REST API and supports Basic Auth.
 
 ### worker / complete
 
-![task-worker and complete node](docs/worker-complete.png?raw=true)
+![task-worker and complete node](docs/worker-complete.png)
 
 Creates an external task worker and subscribes to specific topic. The `worker` node outputs a Node-RED message for each newly received external task task.
 When a Node-RED message is received at the `complete` nodes's input, that external task gets completed in Camunda (with either success, failure or error).
@@ -20,7 +20,7 @@ Please note: These nodes only work in combination. Make sure, the complete objec
 
 ### create process instance
 
-![workflow-instance node](docs/workflow-instance.png?raw=true)
+![workflow-instance node](docs/workflow-instance.png)
 
 A new process instance gets started in Camunda, when a Node-RED message is received at the input.
 
@@ -28,13 +28,13 @@ Once the process instance has been created, the output sends a Node-RED message 
 
 ### correlate message
 
-![publish-message node](docs/publish-message.png?raw=true)
+![publish-message node](docs/publish-message.png)
 
 This node correlate a message to Camunda, when a Node-RED message is received at the input.
 
 ### deploy
 
-![deploy node](docs/deploy.png?raw=true)
+![deploy node](docs/deploy.png)
 
 Inject a bpmn definition definition string to the input of this node to deploy it to Camunda.
 
@@ -42,7 +42,7 @@ You can use the 'file in' node from Node-RED to read a bpmn file from disk, or g
 
 ### variables helper
 
-![variables-helper node](docs/variables-helper.png?raw=true)
+![variables-helper node](docs/variables-helper.png)
 
 To help you build payloads to create process instances or correlate messages, a variable helper is provided.
 
@@ -55,13 +55,13 @@ Flow containing examples with all Camunda Nodes.
 - deploy
 - variables helper
 
-[flows.json](https://github.com/alpine-code/node-red/packages/node-red-contrib-camunda/docs/flows.json)
+[flows.json](docs/flows.json)
 
-![Flow](docs/example-flow.png?raw=true)
+![Flow](docs/example-flow.png)
 
-[process1.bpmn](https://github.com/alpine-code/node-red/packages/node-red-contrib-camunda/docs/process1.bpmn)
+[process1.bpmn](docs/process1.bpmn)
 
-![Process](docs/example-process.png?raw=true)
+![Process](docs/example-process.png)
 
 ## Credits
 
