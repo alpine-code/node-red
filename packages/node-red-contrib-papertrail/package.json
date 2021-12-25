@@ -1,6 +1,6 @@
 {
     "name": "@alpine-code/node-red-contrib-papertrail",
-    "version": "0.3.4",
+    "version": "0.3.5",
     "description": "Papertrail for Node-RED ",
     "main": "index.js",
     "scripts": {

@@ -1,6 +1,6 @@
 {
     "name": "@alpine-code/node-red-contrib-camunda",
-    "version": "2.2.5",
+    "version": "2.2.6",
     "description": "Camunda for Node-RED ",
     "main": "index.js",
     "scripts": {

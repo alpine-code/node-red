@@ -1,6 +1,6 @@
 {
     "name": "@alpine-code/node-red-contrib-zeebe",
-    "version": "0.7.2",
+    "version": "0.7.3",
     "description": "Zeebe nodes for Node-RED ",
     "main": "index.js",
     "scripts": {
