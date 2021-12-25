@@ -1,10 +1,8 @@
 # node-red-contrib-zeebe
 
 [![Platform](https://img.shields.io/badge/platform-Node--RED-red)](https://nodered.org)
-![License](https://img.shields.io/github/license/alpine-code/node-red-contrib-zeebe.svg)
 ![Release](https://img.shields.io/npm/v/@alpine-code/node-red-contrib-zeebe.svg)
 ![NPM](https://img.shields.io/npm/dm/@alpine-code/node-red-contrib-zeebe.svg)
-[![CI](https://github.com/alpine-code/node-red-contrib-zeebe/actions/workflows/main.yml/badge.svg)](https://github.com/alpine-code/node-red-contrib-zeebe/actions/workflows/main.yml)
 
 **Please upgrade node-red-contrib-zeebe to v0.7+ for Zeebe v1.0 or current Camunda Cloud support!** Zeebe versions prior to v1.0 are not supported anymore.
 
@@ -12,7 +10,7 @@ Learn more about how these nodes can be used from basic [example flows](https://
 
 ### worker / complete
 
-![task-worker and complete node](docs/worker-complete.png)
+![task-worker and complete node](packages/node-red-contrib-zeebe/docs/worker-complete.png)
 
 Creates a task worker and subscribes to specific tasks/jobs. The `worker` node outputs a Node-RED message for each newly received task/job.
 When a Node-RED message is received at the `complete` nodes's input, that task/job gets completed in Zeebe (with either success, failure or error).
@@ -23,7 +21,7 @@ See [example flow](https://flows.nodered.org/flow/71e06f6a3e3bcbc7721cd970215b51
 
 ### message
 
-![publish-message node](docs/pub-msg.png)
+![publish-message node](packages/node-red-contrib-zeebe/docs/pub-msg.png)
 
 This node publishes a message to Zeebe, when a Node-RED message is received at the input.
 
@@ -33,7 +31,7 @@ See [example flow](https://flows.nodered.org/flow/d409cb6dfdd283a01724dc85cd6538
 
 ### start message
 
-![publish-start-message node](docs/pub-start-msg.png)
+![publish-start-message node](packages/node-red-contrib-zeebe/docs/pub-start-msg.png)
 
 This node publishes a start message to Zeebe, when a Node-RED message is received at the input.
 
@@ -43,7 +41,7 @@ See [example flow](https://flows.nodered.org/flow/5ab8499646b88cdbbb40a526ff4638
 
 ### process
 
-![deploy node](docs/deploy.png)
+![deploy node](packages/node-red-contrib-zeebe/docs/deploy.png)
 
 Inject a bpmn process definition string to the input of this node to deploy it to Zeebe.
 
@@ -53,7 +51,7 @@ See [example flow](https://flows.nodered.org/flow/1fdad35c25b7269eea64b76d3236c3
 
 ### process instance
 
-![workflow-instance node](docs/create-wfi.png)
+![workflow-instance node](packages/node-red-contrib-zeebe/docs/create-wfi.png)
 
 A new process instance gets started in Zeebe, when a Node-RED message is received at the input.
 

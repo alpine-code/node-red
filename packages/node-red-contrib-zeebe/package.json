@@ -9,7 +9,8 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/alpine-code/node-red-contrib-zeebe.git"
+        "url": "https://github.com/alpine-code/node-red.git",
+        "directory": "packages/node-red-contrib-zeebe"
     },
     "author": "pedesen",
     "license": "MIT",

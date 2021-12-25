@@ -1,12 +1,10 @@
-# node-red-contrib-thelab
+# node-red-contrib-kyuda
 
 [![Platform](https://img.shields.io/badge/platform-Node--RED-red)](https://nodered.org)
-![License](https://img.shields.io/github/license/alpine-code/node-red-contrib-thelab.svg)
-![Release](https://img.shields.io/npm/v/@alpine-code/node-red-contrib-thelab.svg)
-![NPM](https://img.shields.io/npm/dm/@alpine-code/node-red-contrib-thelab.svg)
-[![Build Status](https://drone.alpine-code.com/api/badges/alpine-code/node-red-contrib-thelab/status.svg)](https://drone.alpine-code.com/alpine-code/node-red-contrib-thelab)
+![Release](https://img.shields.io/npm/v/@alpine-code/node-red-contrib-kyuda.svg)
+![NPM](https://img.shields.io/npm/dm/@alpine-code/node-red-contrib-kyuda.svg)
 
-This module leverages TheLab to bring TheLab awesomeness to Node-RED!
+This module leverages Kyuda.io to bring Kyuda.io awesomeness to Node-RED!
 
 ## Credits
 
