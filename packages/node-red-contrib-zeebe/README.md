@@ -10,7 +10,7 @@ Learn more about how these nodes can be used from basic [example flows](https://
 
 ### worker / complete
 
-![task-worker and complete node](docs/worker-complete.png)
+![task-worker and complete node](docs/worker-complete.png?raw=true)
 
 Creates a task worker and subscribes to specific tasks/jobs. The `worker` node outputs a Node-RED message for each newly received task/job.
 When a Node-RED message is received at the `complete` nodes's input, that task/job gets completed in Zeebe (with either success, failure or error).
@@ -21,7 +21,7 @@ See [example flow](https://flows.nodered.org/flow/71e06f6a3e3bcbc7721cd970215b51
 
 ### message
 
-![publish-message node](docs/pub-msg.png)
+![publish-message node](docs/pub-msg.png?raw=true)
 
 This node publishes a message to Zeebe, when a Node-RED message is received at the input.
 
@@ -31,7 +31,7 @@ See [example flow](https://flows.nodered.org/flow/d409cb6dfdd283a01724dc85cd6538
 
 ### start message
 
-![publish-start-message node](docs/pub-start-msg.png)
+![publish-start-message node](docs/pub-start-msg.png?raw=true)
 
 This node publishes a start message to Zeebe, when a Node-RED message is received at the input.
 
@@ -41,7 +41,7 @@ See [example flow](https://flows.nodered.org/flow/5ab8499646b88cdbbb40a526ff4638
 
 ### process
 
-![deploy node](docs/deploy.png)
+![deploy node](docs/deploy.png?raw=true)
 
 Inject a bpmn process definition string to the input of this node to deploy it to Zeebe.
 
@@ -51,7 +51,7 @@ See [example flow](https://flows.nodered.org/flow/1fdad35c25b7269eea64b76d3236c3
 
 ### process instance
 
-![workflow-instance node](docs/create-wfi.png)
+![workflow-instance node](docs/create-wfi.png?raw=true)
 
 A new process instance gets started in Zeebe, when a Node-RED message is received at the input.
 
