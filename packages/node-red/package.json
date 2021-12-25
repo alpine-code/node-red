@@ -1,6 +1,6 @@
 {
   "name": "@alpine-code/node-red",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@alpine-code/node-red-contrib-aws-ses": "*",
-    "@alpine-code/node-red-contrib-camunda": "*",
+    "@alpine-code/node-red-contrib-camunda": "^2.2.9",
     "@alpine-code/node-red-contrib-google": "*",
     "@alpine-code/node-red-contrib-graphql": "*",
     "@alpine-code/node-red-contrib-kafka": "*",
@@ -20,7 +20,7 @@
     "@alpine-code/node-red-contrib-papertrail": "*",
     "@alpine-code/node-red-contrib-rabbitmq-bus": "*",
     "@alpine-code/node-red-contrib-salesforce": "*",
-    "@alpine-code/node-red-contrib-zeebe": "*",
+    "@alpine-code/node-red-contrib-zeebe": "^0.7.6",
     "dotenv": "^8.2.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
