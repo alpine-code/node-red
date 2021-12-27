@@ -1,6 +1,6 @@
 {
     "name": "@alpine-code/node-red-contrib-google-cloud",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Google Cloud for Node-RED ",
     "main": "index.js",
     "scripts": {

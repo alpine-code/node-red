@@ -1,6 +1,6 @@
 {
     "name": "@alpine-code/node-red-contrib-aws-ses",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "description": "AWS SES for Node-RED ",
     "main": "index.js",
     "scripts": {

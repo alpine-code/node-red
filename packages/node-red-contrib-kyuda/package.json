@@ -1,6 +1,6 @@
 {
     "name": "@alpine-code/node-red-contrib-kyuda",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "Kyuda.io for Node-RED ",
     "main": "index.js",
     "scripts": {
