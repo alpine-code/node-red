@@ -1,6 +1,6 @@
 {
     "name": "@alpine-code/node-red-contrib-google",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "Google for Node-RED ",
     "main": "index.js",
     "scripts": {
