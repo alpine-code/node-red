@@ -1,0 +1,29 @@
+<script type="text/javascript">
+  RED.nodes.registerType('google-cloud-config', {
+    category: 'config',
+    defaults: {
+      name: { value: 'Google Cloud'}
+    },
+    credentials: {
+      serviceAccount: { type: "text", required: true }
+    },
+    label: function () {
+      return this.name;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="google-cloud-config">
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="icon-bookmark"></i> Name</label>
+    <input type="text" id="node-config-input-name">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-serviceAccount"><i class="icon-bookmark"></i> Service Account</label>
+    <input type="text" id="node-config-input-serviceAccount">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="google-cloud-config" data-lang="en-US">
+
+</script>

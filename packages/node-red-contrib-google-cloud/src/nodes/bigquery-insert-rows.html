@@ -1,0 +1,45 @@
+<script type="text/javascript">
+  RED.nodes.registerType('google-cloud-bigquery-insert-rows', {
+    category: 'bigquery',
+    color: "#fff",
+    defaults: {
+      name: { value: '' },
+      googleCloud: { type: 'google-cloud-config', required: true },
+      datasetName: { value: '', required: true },
+      tableName: { value: '', required: true },
+    },
+    inputs: 1,
+    outputs: 0,
+    icon: 'bigquery.png',
+    label: function () {
+      return this.name || 'BigQuery Insert Rows';
+    },
+    labelStyle: function () {
+      return this.name ? 'node_label_italic' : '';
+    },
+    paletteLabel: 'insert rows',
+  });
+</script>
+
+<script type="text/x-red" data-template-name="google-cloud-bigquery-insert-rows">
+    <div class="form-row">
+      <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+      <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-googleCloud"><i class="icon-tag"></i> Google Cloud</label>
+        <input type="text" id="node-input-googleCloud" placeholder="Google Cloud">
+    </div>
+    <div class="form-row">
+      <label for="node-input-datasetName"><i class="icon-tag"></i> Dataset Name</label>
+      <input type="text" id="node-input-datasetName" placeholder="Dataset Name">
+    </div>
+    <div class="form-row">
+      <label for="node-input-tableName"><i class="icon-tag"></i> Table Name</label>
+      <input type="text" id="node-input-tableName" placeholder="Table Name">
+    </div>
+  </script>
+
+<script type="text/x-red" data-help-name="google-cloud-bigquery-insert-rows" data-lang="en-US">
+
+  </script>
