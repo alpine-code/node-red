@@ -18,9 +18,9 @@
     "author": "ilzenzo",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/alpine-code/node-red-contrib-rabbitmq-bus/issues"
+        "url": "https://github.com/alpine-code/node-red/issues"
     },
-    "homepage": "https://github.com/alpine-code/node-red-contrib-rabbitmq-bus#readme",
+    "homepage": "https://github.com/alpine-code/node-red#readme",
     "keywords": [
         "node-red",
         "rabbitmq"

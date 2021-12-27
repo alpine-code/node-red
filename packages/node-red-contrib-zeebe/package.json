@@ -15,9 +15,9 @@
     "author": "pedesen",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/alpine-code/node-red-contrib-zeebe/issues"
+        "url": "https://github.com/alpine-code/node-red/issues"
     },
-    "homepage": "https://github.com/alpine-code/node-red-contrib-zeebe#readme",
+    "homepage": "https://github.com/alpine-code/node-red#readme",
     "keywords": [
         "node-red",
         "zeebe",

@@ -18,9 +18,9 @@
     "author": "ilzenzo",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/alpine-code/node-red-contrib-graphql/issues"
+        "url": "https://github.com/alpine-code/node-red/issues"
     },
-    "homepage": "https://github.com/alpine-code/node-red-contrib-graphql#readme",
+    "homepage": "https://github.com/alpine-code/node-red#readme",
     "keywords": [
         "node-red",
         "graphql"

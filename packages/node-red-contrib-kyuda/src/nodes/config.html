@@ -1,0 +1,27 @@
+<script type="text/javascript">
+  RED.nodes.registerType('kyuda-config', {
+    category: 'config',
+    defaults: {
+      name: { value: '', required: true },
+      apiKey: { value: '', required: true }
+    },
+    label: function () {
+      return this.name;
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="kyuda-config">
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="icon-bookmark"></i> Name</label>
+    <input type="text" id="node-config-input-name">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-apiKey"><i class="icon-key"></i> API Key</label>
+    <input type="text" id="node-config-input-apiKey">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="kyuda-config" data-lang="en-US">
+
+</script>

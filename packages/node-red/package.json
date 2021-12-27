@@ -16,6 +16,7 @@
     "@alpine-code/node-red-contrib-google-cloud": "../node-red-contrib-google-cloud",
     "@alpine-code/node-red-contrib-graphql": "../node-red-contrib-graphql",
     "@alpine-code/node-red-contrib-kafka": "../node-red-contrib-kafka",
+    "@alpine-code/node-red-contrib-kyuda": "../node-red-contrib-kyuda",
     "@alpine-code/node-red-contrib-logtail": "../node-red-contrib-logtail",
     "@alpine-code/node-red-contrib-minio": "../node-red-contrib-minio",
     "@alpine-code/node-red-contrib-papertrail": "../node-red-contrib-papertrail",
